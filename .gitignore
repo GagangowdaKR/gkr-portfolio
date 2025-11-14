@@ -23,9 +23,4 @@ web-build/
 .env
 .env.local
 
-# Skips
-assets/* 
-components/* 
-constants/*
-contexts/*
-app/_layout.tsx
+# TODO skip the unwanted files or data
