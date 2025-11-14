@@ -22,10 +22,3 @@ web-build/
 # Environment
 .env
 .env.local
-
-# Skips
-assets/* 
-components/* 
-constants/*
-contexts/*
-app/_layout.tsx
