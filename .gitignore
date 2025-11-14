@@ -22,3 +22,5 @@ web-build/
 # Environment
 .env
 .env.local
+
+# TODO skip the unwanted files or data
