@@ -50,7 +50,7 @@ export default function Navigation() {
   const containerStyle = useMemo(() => ({
     backgroundColor: "rgba(174, 162, 153, 0.08)",
     borderBottomWidth: 2,
-    borderBottomColor: 'rgba(230, 106, 23, 0.18)',
+    borderBottomColor: Colors.secondary,
     borderBottomLeftRadius: BorderRadius.lg,
     borderBottomRightRadius: BorderRadius.lg,
   }), [Colors.background, Colors.border]);
@@ -76,7 +76,7 @@ export default function Navigation() {
       ]}
     >
       <View style={styles.navBar}>
-        <Text style={[styles.logo, { color: 'rgba(148, 142, 138, 0.36)' }]}>Portfolio</Text>
+        <Text style={[styles.logo, { color: Colors.primary }]}>Portfolio</Text>
         {Platform.OS === 'web' ? (
           <View style={styles.navItemsContainer}>
             <View style={styles.navItems}>
@@ -114,7 +114,7 @@ export default function Navigation() {
               activeOpacity={0.7}
             >
               <Text style={[styles.themeIcon, { color: Colors.text }]}>
-                {isDark ? '☀️' : '🌙'}
+                {isDark ? '💡' : '🌚'}
               </Text>
             </Hoverable>
           </View>
@@ -132,7 +132,7 @@ export default function Navigation() {
               activeOpacity={0.7}
             >
               <Text style={[styles.themeIcon, { color: Colors.text }]}>
-                {isDark ? '☀️' : '🌙'}
+                {isDark ? '💡' : '🌚'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

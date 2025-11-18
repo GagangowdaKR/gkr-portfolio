@@ -6,32 +6,31 @@ import {
   Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Spacing, Typography, BorderRadius, Colors } from '@/constants/Theme';
+// import { Spacing, Typography, BorderRadius, Colors } from '@/constants/Theme';
+import { Spacing, Typography, BorderRadius, lightColors, darkColors } from '@/constants/Theme';
+import { useTheme } from '@/contexts/ThemeContext';
 import Hoverable from './Hoverable';
 
 export default function Hero() {
+  const { theme, toggleTheme, isDark } = useTheme();
+  const Colors = isDark ? darkColors : lightColors;
   return (
+    
     <View style={styles.container}> 
-     {/* <LinearGradient
-        colors={["rgba(99, 94, 94, 0.22)", 'rgba(99, 94, 94, 0.22)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradient}
-      > */}
-        <View style={[styles.content, { backgroundColor: Colors.backgroundLight }]}>
+        <View style={[styles.content, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1 }]}>
           <Text style={styles.greeting}>Hello, I'm</Text>
-          <Text style={styles.name}>Gagan Gowda   K  R</Text>
+          <Text style={[styles.name, { color: Colors.primary}]}>Gagan Gowda   K  R</Text>
           <Text style={styles.title}>Associate Software Engineer</Text>
-          <Text style={styles.description}>
+          <Text style={[styles.description, {color: Colors.textLight}]}>
             Welcome to my world where kindness guides everything I do. I’m a
             nature enthusiast and a hardworking soul, crafting a future filled
             with dreams and dedication.
           </Text>
-          <View style={styles.buttonContainer}>
-            <Hoverable style={styles.primaryButton}>
+          <View style={[styles.buttonContainer, {borderColor : Colors.secondary}]}>
+            <Hoverable style={[styles.primaryButton ,{borderColor : Colors.secondary}]}>
               <Text style={styles.primaryButtonText}>Download Resume</Text>
             </Hoverable>
-            <Hoverable style={styles.secondaryButton}>
+            <Hoverable style={[styles.secondaryButton, {borderColor : Colors.secondary}]}>
               <Text style={styles.secondaryButtonText}>Know more</Text>
             </Hoverable>
           </View>
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
   },
   name: {
     ...Typography.h1,
-    color: 'rgba(255, 102, 0, 0.33)',
+    // color: 'rgba(255, 102, 0, 0.33)',
     marginBottom: Spacing.sm,
     textAlign: 'center',
     ...(Platform.OS === 'web' && {
@@ -94,7 +93,7 @@ const styles = StyleSheet.create({
   },
   description: {
     ...Typography.body,
-    color: 'rgba(194, 183, 183, 0.9)',
+    // color: 'rgba(60, 57, 57, 0.9)',
     textAlign: 'center',
     maxWidth: Platform.OS === 'web' ? 600 : '100%',
     marginBottom: Spacing.xl,
@@ -113,7 +112,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.full,
     borderWidth: 2,
-    borderColor: 'rgba(255, 102, 0, 0.15)',
+    // borderColor: 'rgba(255, 102, 0, 0.15)',
     minWidth: Platform.OS === 'web' ? 160 : '100%',
     alignItems: 'center',
   },
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
   secondaryButton: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: 'rgba(255, 102, 0, 0.15)',
+    // borderColor: 'rgba(255, 102, 0, 0.15)',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.full,

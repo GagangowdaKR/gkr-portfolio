@@ -51,16 +51,11 @@ export default function Contact() {
 
   return (
     <View style={styles.container}>
-      {/* <LinearGradient
-        colors={[Colors.gray600, Colors.gray600]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradient}
-      > */}
-        <View style={[styles.content, { backgroundColor: Colors.backgroundLight }]}>
-          <Text style={styles.title}>Contact Me</Text>
-          <View style={styles.divider} />
-          <Text style={styles.subtitle}>
+
+        <View style={[styles.content, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1 }]}>
+          <Text style={[styles.title, { color: Colors.text }]}>Contact Me</Text>
+          <View style={[styles.divider, {backgroundColor: Colors.secondary}]} />
+          <Text style={[styles.subtitle,{color: Colors.textLight}]}>
             I value open communication. For inquiries or collaborations, feel free to reach out.
           </Text>
 
@@ -70,14 +65,14 @@ export default function Contact() {
               onPress={() => openLink('mailto:gagandarshan22@gmail.com')}
             >
               <Text style={styles.contactIcon}>📧</Text>
-              <Text style={styles.contactText}>gagandarshan22@gmail.com</Text>
+              <Text style={styles.contactText}>E-mail</Text>
             </Hoverable>
             <Hoverable
               style={styles.contactItem}
               onPress={() => openLink('tel:+916364109281')}
             >
               <Text style={styles.contactIcon}>📱</Text>
-              <Text style={styles.contactText}>+91 63641 09281</Text>
+              <Text style={styles.contactText}>Call</Text>
             </Hoverable>
             <Hoverable
               style={styles.contactItem}
@@ -97,14 +92,14 @@ export default function Contact() {
 
           <View style={styles.form}>
             <TextInput
-              style={styles.input}
+              style={[styles.input,{borderColor: Colors.border}]}
               placeholder="Your Name"
               placeholderTextColor="#999"
               value={name}
               onChangeText={setName}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input,{borderColor: Colors.border}]}
               placeholder="Your Email"
               placeholderTextColor="#999"
               value={email}
@@ -113,7 +108,7 @@ export default function Contact() {
               autoCapitalize="none"
             />
             <TextInput
-              style={[styles.input, styles.messageInput]}
+              style={[styles.input, styles.messageInput, {borderColor: Colors.border}]}
               placeholder="Your Message"
               placeholderTextColor="#999"
               value={message}
@@ -123,10 +118,10 @@ export default function Contact() {
               textAlignVertical="top"
             />
             <Hoverable
-              style={styles.submitButton}
+              style={[styles.submitButton,{backgroundColor: Colors.secondary}]}
               onPress={handleSubmit}
             >
-              <Text style={styles.submitButtonText}>Send Message</Text>
+              <Text style={[styles.submitButtonText, {color : Colors.primary}]}>Send Message</Text>
             </Hoverable>
           </View>
         </View>
@@ -172,20 +167,19 @@ const styles = StyleSheet.create({
   },
   title: {
     ...Typography.h2,
-    color: 'rgba(255, 102, 0, 0.24)',
     marginBottom: Spacing.md,
     textAlign: 'center',
   },
   divider: {
     width: 60,
     height: 4,
-    backgroundColor: '#ffffff',
+    // backgroundColor: '#rgba(88, 68, 237, 0.18)',
     borderRadius: BorderRadius.sm,
     marginBottom: Spacing.md,
   },
   subtitle: {
     ...Typography.body,
-    color: 'rgba(255, 255, 255, 0.9)',
+    // color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
     marginBottom: Spacing.xl,
   },
@@ -193,11 +187,12 @@ const styles = StyleSheet.create({
     flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     gap: Spacing.md,
     marginBottom: Spacing.xl,
-    width: '100%',
+    // width: '100%',
+    width: Platform.OS === 'web' ? '100%' : '50%',
     maxWidth: 600,
   },
   contactItem: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: Spacing.md,
@@ -207,13 +202,14 @@ const styles = StyleSheet.create({
       width: '100%',
     }),
   },
+  
   contactIcon: {
     fontSize: 24,
     marginRight: Spacing.sm,
   },
   contactText: {
     ...Typography.body,
-    color: '#ffffff',
+    color: 'rgba(5, 5, 5, 0.55)',
   },
   form: {
     width: '100%',
@@ -227,14 +223,12 @@ const styles = StyleSheet.create({
     color: '#1f2937',
     marginBottom: Spacing.md,
     borderWidth: 2,
-    borderColor: 'rgba(255, 102, 0, 0.15)',
   },
   messageInput: {
     minHeight: 120,
     paddingTop: Spacing.md,
   },
   submitButton: {
-    backgroundColor: 'rgba(255, 102, 0, 0.15)',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.full,

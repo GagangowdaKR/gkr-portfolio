@@ -20,7 +20,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
-// ✅ PNG URLs (compatible with Android & iOS)
+// PNG URLs (compatible with Android & iOS)
 const skillIcons = [
   {
     name: 'Java',
@@ -89,7 +89,7 @@ export default function Skills() {
         <Text style={[styles.title, { color: Colors.text }]}>
           Technical Skills
         </Text>
-        <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
+        <View style={[styles.divider, { backgroundColor: Colors.secondary }]} />
         <Text style={[styles.subtitle, { color: Colors.textLight }]}>
           Tools and technologies I use
         </Text>

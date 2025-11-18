@@ -75,7 +75,7 @@ export default function Experience() {
         <Text style={[styles.title, { color: Colors.text }]}>
           Professional Experience
         </Text>
-        <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
+        <View style={[styles.divider, { backgroundColor: Colors.secondary }]} />
         <Text style={[styles.subtitle, { color: Colors.textLight }]}>
           My career journey
         </Text>

@@ -14,9 +14,9 @@ export default function About() {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.content, { backgroundColor: Colors.backgroundLight }]}>
+      <View style={[styles.content, { backgroundColor: Colors.background, borderColor: Colors.border, borderWidth: 1 }]}>
         <Text style={[styles.title, { color: Colors.text }]}>About Me</Text>
-        <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
+        <View style={[styles.divider, { backgroundColor: Colors.secondary }]} />
         <Text style={[styles.description, { color: Colors.textLight }]}>
           Step Into My World! Welcome to the enchanting realm I call my own,
           where kindness is not just a choice but a way of life. I am a
