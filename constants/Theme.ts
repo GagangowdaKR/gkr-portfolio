@@ -1,57 +1,60 @@
 export const lightColors = {
   // Brand
-  primary: '#6366f1',
-  primaryDark: '#4f46e5',
-  secondary: '#8b5cf6',
-  accent: '#ec4899',
+  primary: '#4F46E5',         // Modern soft blue
+  primaryDark: '#4338CA',     // Slightly deeper blue
+  // secondary: '#6366F1',       // Indigo-blue accent
+  secondary: 'rgba(72, 53, 216, 0.33)',
+  accent: '#94A3FF',          // Light pastel blue (matches tags)
 
   // Light theme surface
-  background: '#ffffff',
-  backgroundLight: '#f8f9fa',
-  border: '#e5e7eb',
+  background: '#FFFFFF',
+  backgroundLight: '#F7F8FC', // Soft off-white for cards
+  border: 'rgba(72, 53, 216, 0.33)',
 
   // Text
-  text: '#1f2937',
-  textLight: '#6b7280',
+  text: '#111827',      // Strong black-ish text
+  textLight: '#4B5563', // Medium gray text
 
   // Status
-  success: '#10b981',
-  error: '#ef4444',
-  warning: '#f59e0b',
+  success: '#10B981',
+  error: '#EF4444',
+  warning: '#F59E0B',
 
-  // Extra neutrals for design flexibility
+  // Extras
   black: '#000000',
   gray700: '#374151',
-  gray600: '#4b5563',
-  white: '#ffffff',
+  gray600: '#4B5563',
+  white: '#FFFFFF',
 };
+
 
 export const darkColors = {
   // Brand
-  primary: '#6366f1',
-  primaryDark: '#4f46e5',
-  secondary: '#8b5cf6',
-  accent: '#ec4899',
+  primary: '#D97706',        // Warm orange (matches your heading)
+  primaryDark: '#B45309',    // Deeper orange
+  // secondary: '#F59E0B',      // Secondary orange
+  secondary: 'rgba(230, 106, 23, 0.18)',
+  accent: '#FFB94F',         // Soft glowing orange accent
 
   // Dark theme surface
-  background: '#0b0b0c',
-  backgroundLight: '#131316',
-  border: '#232328',
+  background: '#0B0B0C',     // Same as your screenshot
+  backgroundLight: '#161618',// Slightly lighter for cards
+  border: 'rgba(230, 106, 23, 0.18)',
 
   // Text
-  text: '#f5f7fa',
-  textLight: '#a0a6ae',
+  text: '#F3F4F6',           // Off-white
+  textLight: '#A0A0A5',      // Grayish text
 
   // Status
-  success: '#10b981',
-  error: '#ef4444',
-  warning: '#f59e0b',
+  success: '#10B981',
+  error: '#EF4444',
+  warning: '#F59E0B',
 
-  // Extra neutrals for design flexibility
+  // Extras
   black: '#000000',
-  gray700: '#2a2a2e',
-  gray600: '#3a3a40',
-  white: '#ffffff',
+  gray700: '#2A2A2E',
+  gray600: '#3A3A40',
+  white: '#FFFFFF',
 };
 
 // Default export for backwards compatibility (will be replaced by theme context)
