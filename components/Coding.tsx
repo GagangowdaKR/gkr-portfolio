@@ -38,15 +38,16 @@ export default function Coding() {
 
   return (
     <View style={styles.container}>
+      <View style={[styles.content, { backgroundColor: Colors.background, borderColor: Colors.border, borderWidth: 1 }]}>
       <Text style={[styles.title, { color: Colors.text }]}>Coding</Text>
-      <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
+      <View style={[styles.divider, { backgroundColor: Colors.secondary }]} />
       <View style={styles.grid}>
         {CARDS.map((card) => (
           <Hoverable
             key={card.title}
             style={[
               styles.card,
-              { backgroundColor: Colors.backgroundLight },
+              { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1 },
             ]}
           >
             <Text style={[styles.cardTitle, { color: Colors.text }]}>
@@ -58,14 +59,16 @@ export default function Coding() {
             <Hoverable
               style={[
                 styles.cta,
-                { backgroundColor: Colors.primary },
+                { backgroundColor: Colors.primary + '20' },
               ]}
               onPress={() => open(card.url)}
             >
-              <Text style={styles.ctaText}>Learn more</Text>
+              <Text style={[styles.ctaText, { color: Colors.primary }]}>Learn more</Text>
+              
             </Hoverable>
           </Hoverable>
         ))}
+      </View>
       </View>
     </View>
   );
@@ -73,10 +76,24 @@ export default function Coding() {
 
 const styles = StyleSheet.create({
   container: {
+    // width: '100%',
+    // paddingHorizontal: Spacing.lg,
+    // marginBottom: Spacing.xxl,
+    // ...(Platform.OS === 'web' && { maxWidth: 1200, alignSelf: 'center' }),
     width: '100%',
     paddingHorizontal: Spacing.lg,
     marginBottom: Spacing.xxl,
-    ...(Platform.OS === 'web' && { maxWidth: 1200, alignSelf: 'center' }),
+    ...(Platform.OS === 'web' && {
+      maxWidth: 1200,
+      alignSelf: 'center',
+    }),
+  },content: {
+    padding: Spacing.xl,
+    borderRadius: BorderRadius.lg,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: Spacing.xl,
   },
   title: {
     ...Typography.h2,
@@ -116,7 +133,7 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     ...Typography.body,
-    color: '#ffffff',
+    // color: '#ffffff',
     fontWeight: '600',
   },
 });
