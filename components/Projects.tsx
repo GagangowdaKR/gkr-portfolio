@@ -137,7 +137,7 @@ export default function Projects() {
   );
 
   return (
-    <View style={styles.container}>
+    <View nativeID="projects" style={styles.container}>
       <View
         style={[
           styles.content,

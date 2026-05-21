@@ -37,7 +37,7 @@ export default function Coding() {
   const open = (url: string) => Linking.openURL(url).catch(() => {});
 
   return (
-    <View style={styles.container}>
+    <View nativeID="coding" style={styles.container}>
       <View style={[styles.content, { backgroundColor: Colors.background, borderColor: Colors.border, borderWidth: 1 }]}>
       <Text style={[styles.title, { color: Colors.text }]}>Coding</Text>
       <View style={[styles.divider, { backgroundColor: Colors.secondary }]} />

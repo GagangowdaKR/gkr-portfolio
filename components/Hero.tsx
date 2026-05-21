@@ -5,20 +5,31 @@ import {
   StyleSheet,
   Platform
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Spacing, Typography, BorderRadius, Colors } from '@/constants/Theme';
+// import { LinearGradient } from 'expo-linear-gradient';
+import {
+  Spacing,
+  Typography,
+  BorderRadius,
+  lightColors,
+  darkColors,
+} from '@/constants/Theme';
+
+import { useTheme } from '@/contexts/ThemeContext';
+
 import Hoverable from './Hoverable';
 
 export default function Hero() {
+  const { isDark } = useTheme();
+  const Colors = isDark ? darkColors : lightColors;
   return (
-    <View style={styles.container}> 
+    <View nativeID="hero"style={styles.container}> 
      {/* <LinearGradient
         colors={["rgba(99, 94, 94, 0.22)", 'rgba(99, 94, 94, 0.22)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradient}
       > */}
-        <View style={[styles.content, { backgroundColor: Colors.backgroundLight }]}>
+        <View style={[styles.content, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1 }]}>
           <Text style={styles.greeting}>Hello, I'm</Text>
           <Text style={styles.name}>Gagan Gowda   K  R</Text>
           <Text style={styles.title}>Associate Software Engineer</Text>

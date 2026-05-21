@@ -62,7 +62,7 @@ export default function Experience() {
   const Colors = isDark ? darkColors : lightColors;
 
   return (
-    <View style={styles.container}>
+    <View nativeID="experience" style={styles.container}>
       <View
         style={[
           styles.content,

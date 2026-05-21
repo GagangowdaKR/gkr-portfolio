@@ -76,12 +76,12 @@ export default function Skills() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View nativeID="skills" style={styles.container}>
       <View
         style={[
           styles.content,
           {
-            backgroundColor: Colors.background,
+            backgroundColor: Colors.backgroundLight,
             borderColor: Colors.border,
           },
         ]}
