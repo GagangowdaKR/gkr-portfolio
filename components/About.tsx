@@ -13,8 +13,8 @@ export default function About() {
   const Colors = isDark ? darkColors : lightColors;
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.content, { backgroundColor: Colors.backgroundLight }]}>
+    <View nativeID="about" style={styles.container}>
+      <View style={[styles.content, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1 }]}>
         <Text style={[styles.title, { color: Colors.text }]}>About Me</Text>
         <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
         <Text style={[styles.description, { color: Colors.textLight }]}>

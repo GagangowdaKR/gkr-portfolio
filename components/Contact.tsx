@@ -50,61 +50,61 @@ export default function Contact() {
   };
 
   return (
-    <View style={styles.container}>
+    <View nativeID="contact" style={styles.container}>
       {/* <LinearGradient
         colors={[Colors.gray600, Colors.gray600]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradient}
       > */}
-        <View style={[styles.content, { backgroundColor: Colors.backgroundLight }]}>
+        <View style={[styles.content, { backgroundColor: Colors.background, borderColor: Colors.border, borderWidth: 1 }]}>
           <Text style={styles.title}>Contact Me</Text>
           <View style={styles.divider} />
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: Colors.textLight }]}>
             I value open communication. For inquiries or collaborations, feel free to reach out.
           </Text>
 
-          <View style={styles.contactInfo}>
+          <View style={[styles.contactInfo]}>
             <Hoverable
-              style={styles.contactItem}
+              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
               onPress={() => openLink('mailto:gagandarshan22@gmail.com')}
             >
               <Text style={styles.contactIcon}>📧</Text>
-              <Text style={styles.contactText}>gagandarshan22@gmail.com</Text>
+              <Text style={[styles.contactText, { color: Colors.textLight }]}>gagandarshan22@gmail.com</Text>
             </Hoverable>
             <Hoverable
-              style={styles.contactItem}
+              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
               onPress={() => openLink('tel:+916364109281')}
             >
               <Text style={styles.contactIcon}>📱</Text>
-              <Text style={styles.contactText}>+91 63641 09281</Text>
+              <Text style={[styles.contactText, { color: Colors.textLight }]}>+91 63641 09281</Text>
             </Hoverable>
             <Hoverable
-              style={styles.contactItem}
+              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
               onPress={() => openLink('https://github.com/yourusername')}
             >
               <Text style={styles.contactIcon}>💼</Text>
-              <Text style={styles.contactText}>GitHub</Text>
+              <Text style={[styles.contactText, { color: Colors.textLight }]}>GitHub</Text>
             </Hoverable>
             <Hoverable
-              style={styles.contactItem}
+              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
               onPress={() => openLink('https://linkedin.com/in/yourusername')}
             >
               <Text style={styles.contactIcon}>🔗</Text>
-              <Text style={styles.contactText}>LinkedIn</Text>
+              <Text style={[styles.contactText, { color: Colors.textLight }]}>LinkedIn</Text>
             </Hoverable>
           </View>
 
           <View style={styles.form}>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: Colors.primary, borderColor: Colors.border, borderWidth: 1 }]}
               placeholder="Your Name"
               placeholderTextColor="#999"
               value={name}
               onChangeText={setName}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: Colors.primary, borderColor: Colors.border, borderWidth: 1 }]}
               placeholder="Your Email"
               placeholderTextColor="#999"
               value={email}
@@ -113,7 +113,7 @@ export default function Contact() {
               autoCapitalize="none"
             />
             <TextInput
-              style={[styles.input, styles.messageInput]}
+              style={[styles.input, styles.messageInput, { color: Colors.primary, borderColor: Colors.border, borderWidth: 1 }]}
               placeholder="Your Message"
               placeholderTextColor="#999"
               value={message}
@@ -190,16 +190,16 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   contactInfo: {
-    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
+    flexDirection: Platform.OS === 'web' ? 'column-reverse' : 'column',
     gap: Spacing.md,
     marginBottom: Spacing.xl,
     width: '100%',
-    maxWidth: 600,
+    maxWidth: 300,
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    // backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: Spacing.md,
     borderRadius: BorderRadius.md,
     flex: Platform.OS === 'web' ? 1 : undefined,
@@ -220,14 +220,14 @@ const styles = StyleSheet.create({
     maxWidth: 600,
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(163, 125, 125, 0.1)',
     padding: Spacing.md,
     borderRadius: BorderRadius.md,
     ...Typography.body,
-    color: '#1f2937',
+    // color: '#3868aa',
     marginBottom: Spacing.md,
     borderWidth: 2,
-    borderColor: 'rgba(255, 102, 0, 0.15)',
+    // borderColor: 'rgba(255, 102, 0, 0.15)',
   },
   messageInput: {
     minHeight: 120,

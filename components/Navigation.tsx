@@ -34,12 +34,28 @@ export default function Navigation() {
   const [activeSection, setActiveSection] = useState('hero');
   const Colors = isDark ? darkColors : lightColors;
 
+  // const scrollToSection = (section: string) => {
+  //   // In a real app, you'd scroll to the section
+  //   // For now, we'll just update the active section
+  //   setActiveSection(section);
+  //   setIsMenuOpen(false);
+  // };
   const scrollToSection = (section: string) => {
-    // In a real app, you'd scroll to the section
-    // For now, we'll just update the active section
-    setActiveSection(section);
-    setIsMenuOpen(false);
-  };
+  setActiveSection(section);
+
+  if (Platform.OS === 'web') {
+    const element = document.getElementById(section);
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }
+
+  setIsMenuOpen(false);
+};
 
   useEffect(() => {
     if (Platform.OS === 'web') {
@@ -76,7 +92,7 @@ export default function Navigation() {
       ]}
     >
       <View style={styles.navBar}>
-        <Text style={[styles.logo, { color: 'rgba(148, 142, 138, 0.36)' }]}>Portfolio</Text>
+        <Text style={[styles.logo, { color: Colors.primary }]}>Portfolio</Text>
         {Platform.OS === 'web' ? (
           <View style={styles.navItemsContainer}>
             <View style={styles.navItems}>
