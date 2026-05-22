@@ -1,5 +1,5 @@
 {
-  "public": true,
+  "outputDirectory": "dist",
   "cleanUrls": true,
   "rewrites": [
     {
