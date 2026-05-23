@@ -22,7 +22,7 @@ export default function Hero() {
   const { isDark } = useTheme();
   const Colors = isDark ? darkColors : lightColors;
   return (
-    <View nativeID="hero"style={styles.container}> 
+    <View nativeID="hero" style={styles.container}> 
      {/* <LinearGradient
         colors={["rgba(99, 94, 94, 0.22)", 'rgba(99, 94, 94, 0.22)']}
         start={{ x: 0, y: 0 }}
