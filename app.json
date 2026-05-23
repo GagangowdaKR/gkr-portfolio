@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Portfolio App",
+    "name": "GKR Portfolio",
     "slug": "gkr-portfolio",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,32 +8,43 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.portfolio.app"
-    },
     "android": {
+      "package": "com.gagank22.gkrportfolio",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.portfolio.app"
+      "metaData": {
+        "com.google.ar.core": "optional"
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.portfolio.app"
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-asset"
     ],
-    "scheme": "portfolio"
+    "scheme": "portfolio",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a360064f-3add-471b-bb3a-71e624e49efe"
+      }
+    },
+    "owner": "gagank22"
   }
 }
-
-
