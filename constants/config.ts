@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 // Set this to true when you want to test against your local Spring Boot instance
-const USE_LOCAL_BACKEND = false; 
+const USE_LOCAL_BACKEND = true; 
 
 // Localhost routing configuration
 const LOCAL_API_URL = Platform.OS === 'web' 
