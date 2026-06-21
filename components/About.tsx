@@ -18,30 +18,28 @@ export default function About() {
         <Text style={[styles.title, { color: Colors.text }]}>About Me</Text>
         <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
         <Text style={[styles.description, { color: Colors.textLight }]}>
-          Step Into My World! Welcome to the enchanting realm I call my own,
-          where kindness is not just a choice but a way of life. I am a
-          simple-hearted soul, navigating the twists and turns of life with a
-          genuine passion for spreading warmth and positivity.
+          I am a Junior Software Engineer based in Bengaluru, passionate about designing and developing robust 
+          backend applications. With a solid foundation in Design Principles, SOLID Principles, Object-Oriented Programming (OOP) and 
+          Data Structures & Algorithms (DSA), I specialize in building scalable RESTful APIs and working within microservices environments.
         </Text>
         <Text style={[styles.description, { color: Colors.textLight }]}>
-          As a fervent lover of nature, I find solace in its embrace, drawing
-          inspiration from the delicate dance of leaves and the symphony of
-          birdsong. In the tapestry of my life, each thread is woven with the
-          qualities of a hard worker, diligently crafting a future filled with
-          dreams and aspirations.
+          I thrive on solving complex problems, a passion backed by successfully tackling 1000+ coding problems across
+          competitive programming platforms like LeetCode, GeeksforGeeks, and CodeChef. Whether optimizing system performance 
+          or collaborating across cross-functional teams, I am always eager to enhance my technical expertise and deliver high-quality 
+          software solutions
         </Text>
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <Text style={[styles.statNumber, { color: Colors.primary }]}>Java</Text>
-            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Technical Skill</Text>
+            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Java - 8 / 17 / 21 / 25</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={[styles.statNumber, { color: Colors.primary }]}>DSA</Text>
-            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Technical Skill</Text>
+            <Text style={[styles.statNumber, { color: Colors.primary }]}>Spring Boot</Text>
+            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Spring Boot - 3.0 / 4.0</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={[styles.statNumber, { color: Colors.primary }]}>MySQL</Text>
-            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Technical Skill</Text>
+            <Text style={[styles.statNumber, { color: Colors.primary }]}>Microservices</Text>
+            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Distributed Systems</Text>
           </View>
         </View>
       </View>
