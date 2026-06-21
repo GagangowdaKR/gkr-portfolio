@@ -20,28 +20,47 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
-// ✅ PNG URLs (compatible with Android & iOS)
+// ✅ Local static asset references using require()
 const skillIcons = [
-  {
-    name: 'Java',
-    icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968282.png',
-  },
-  {
-    name: 'DSA',
-    icon: 'https://cdn-icons-png.flaticon.com/512/906/906324.png',
-  },
-  {
-    name: 'MySQL',
-    icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968313.png',
-  },
-  {
-    name: 'HTML/CSS',
-    icon: 'https://cdn-icons-png.flaticon.com/512/5968/5968267.png',
-  },
-  {
-    name: 'Spring Boot',
-    icon: 'https://cdn-icons-png.flaticon.com/512/1183/1183672.png',
-  },
+  { name: 'Java', icon: require('@/assets/icons/Java.png') },
+  { name: 'Spring Boot', icon: require('@/assets/icons/Spring Boot.png') },
+  { name: 'Microservices', icon: require('@/assets/icons/Microservices.png') },
+  { name: 'RabbitMQ', icon: require('@/assets/icons/RabbitMQ.png') },
+  { name: 'Spring Security', icon: require('@/assets/icons/Spring Security.png') },
+  { name: 'MySQL', icon: require('@/assets/icons/MySQL.png') },
+  { name: 'MariaDB', icon: require('@/assets/icons/MariaDB.png') },
+  { name: 'MongoDB', icon: require('@/assets/icons/MongoDB.png') },
+  { name: 'PostgreSQL', icon: require('@/assets/icons/Postgresql.png') },
+  { name: 'Spring Mail', icon: require('@/assets/icons/Spring Mail.png') },
+  { name: 'Redis Cache', icon: require('@/assets/icons/Redis.png') },
+  { name: 'Elastic Search', icon: require('@/assets/icons/Elastic Search.png') },
+  { name: 'JQuery', icon: require('@/assets/icons/JQuery.png') },
+  { name: 'JUnit', icon: require('@/assets/icons/JUnit.png') },
+  { name: 'JWT', icon: require('@/assets/icons/JWT.png') },
+  { name: 'OAuth2', icon: require('@/assets/icons/OAuth2.png') },
+  { name: 'Maven', icon: require('@/assets/icons/Maven.png') },
+  { name: 'Gradle', icon: require('@/assets/icons/Gradle.png') },
+  { name: 'Rest API', icon: require('@/assets/icons/RestAPI.png') },
+  { name: 'SFTP', icon: require('@/assets/icons/SFTP.png') },
+  { name: 'Linux', icon: require('@/assets/icons/Linux.png') },
+  { name: 'Docker', icon: require('@/assets/icons/Docker.png') },
+  { name: 'CICD', icon: require('@/assets/icons/CICD.png') },
+  { name: 'Jenkins', icon: require('@/assets/icons/Jenkins.png') },
+  { name: 'Portainer', icon: require('@/assets/icons/Portainer.png') },
+  { name: 'Git', icon: require('@/assets/icons/Git.png') },
+  { name: 'Github', icon: require('@/assets/icons/Github.png') },
+  { name: 'Bitbucket', icon: require('@/assets/icons/Bitbucket.png') },
+  { name: 'Jira', icon: require('@/assets/icons/Jira.png') },
+  { name: 'React Native', icon: require('@/assets/icons/React Native.png') },
+  { name: 'Cross Platform', icon: require('@/assets/icons/Cross-Platform.png') },
+  { name: 'HTML', icon: require('@/assets/icons/HTML.png') },
+  { name: 'CSS', icon: require('@/assets/icons/CSS.png') },
+  { name: 'JSON 5', icon: require('@/assets/icons/JSON.png') },
+  { name: 'JavaScript', icon: require('@/assets/icons/JavaScript.png') },
+  { name: 'Postman', icon: require('@/assets/icons/Postman.png') },
+  { name: 'Bruno', icon: require('@/assets/icons/Bruno.png') },
+  { name: 'IntelliJ IDEA', icon: require('@/assets/icons/IntelliJ.png') },
+  { name: 'Visual Studio', icon: require('@/assets/icons/VSCode.png') },
 ];
 
 export default function Skills() {
@@ -73,7 +92,7 @@ export default function Skills() {
 
     loops.forEach((loop) => loop.start());
     return () => loops.forEach((loop) => loop.stop());
-  }, []);
+  }, [animations]);
 
   return (
     <View nativeID="skills" style={styles.container}>
@@ -111,7 +130,7 @@ export default function Skills() {
                 ]}
               >
                 <Image
-                  source={{ uri: skill.icon }}
+                  source={skill.icon} // ✅ Directly passing the locally requested asset resource mapping object
                   style={styles.skillIcon}
                   resizeMode="contain"
                 />
