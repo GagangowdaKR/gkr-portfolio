@@ -26,7 +26,7 @@ export default function About() {
           I thrive on solving complex problems, a passion backed by successfully tackling 1000+ coding problems across
           competitive programming platforms like LeetCode, GeeksforGeeks, and CodeChef. Whether optimizing system performance 
           or collaborating across cross-functional teams, I am always eager to enhance my technical expertise and deliver high-quality 
-          software solutions
+          software solutions.
         </Text>
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
@@ -39,7 +39,7 @@ export default function About() {
           </View>
           <View style={styles.statItem}>
             <Text style={[styles.statNumber, { color: Colors.primary }]}>Microservices</Text>
-            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Distributed Systems</Text>
+            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Distributed System Architecture</Text>
           </View>
         </View>
       </View>
