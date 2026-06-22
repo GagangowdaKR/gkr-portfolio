@@ -424,6 +424,7 @@ const styles = StyleSheet.create({
     maxHeight: '85%',
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
+    cursor: 'auto',
     padding: Spacing.xl,
     ...Platform.select({
       web: { boxShadow: '0px 10px 25px rgba(0,0,0,0.3)' },
