@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
+  useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Spacing, Typography, BorderRadius, lightColors, darkColors } from '@/constants/Theme';
@@ -29,39 +30,107 @@ const navItems: NavItem[] = [
 
 export default function Navigation() {
   const insets = useSafeAreaInsets();
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { width: windowWidth } = useWindowDimensions();
+  const { toggleTheme, isDark } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const Colors = isDark ? darkColors : lightColors;
 
-  // const scrollToSection = (section: string) => {
-  //   // In a real app, you'd scroll to the section
-  //   // For now, we'll just update the active section
-  //   setActiveSection(section);
-  //   setIsMenuOpen(false);
-  // };
-  const scrollToSection = (section: string) => {
-  setActiveSection(section);
+  const NAVBAR_HEIGHT = 70;
+  const isMobileLayout = windowWidth < 768;
 
-  if (Platform.OS === 'web') {
-    const element = document.getElementById(section);
-
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }
-
-  setIsMenuOpen(false);
-};
-
+  // A mutable ref flag to bypass intersection observer updates during smooth auto-scrolling
+  const isClickScrolling = useRef(false);
+const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Injects dynamic scroll padding bounds to prevent elements from ducking under the fixed navbar
   useEffect(() => {
-    if (Platform.OS === 'web') {
-      setIsMenuOpen(true); // Always show menu on web
-    }
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = `
+      html {
+        scroll-padding-top: ${NAVBAR_HEIGHT + 24}px !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
   }, []);
+
+  // Web Scroll Spy Tracker: Uses high-performance IntersectionObserver to track scroll depth view states
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+
+    const handleScrollFallback = () => {
+      // If we are click-scrolling, completely ignore scroll position evaluation tracking to eliminate icon blinking
+      if (isClickScrolling.current) return;
+
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+      if (window.scrollY + clientHeight >= scrollHeight - 30) {
+        setActiveSection('contact');
+      }
+    };
+    window.addEventListener('scroll', handleScrollFallback);
+
+    const observerOptions = {
+      root: null,
+      rootMargin: `-${NAVBAR_HEIGHT}px 0px -40% 0px`,
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      // Block runtime section updates if automated scroll redirection execution is running
+      if (isClickScrolling.current) return;
+
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    navItems.forEach((item) => {
+      const el = document.getElementById(item.section);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScrollFallback);
+    };
+  }, [isDark]);
+
+  const scrollToSection = (section: string) => {
+    // 1. Instantly snap active design state directly to clicked item parameters
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    isClickScrolling.current = true;
+    setActiveSection(section);
+
+    if (Platform.OS === 'web') {
+      const element = document.getElementById(section);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+
+        // 2. Clear click lock once smooth animation completes 
+        scrollTimeoutRef.current = setTimeout(() => {
+          isClickScrolling.current = false;
+        }, 850); // Matches smooth scroll translation animation length benchmarks exactly
+      }
+    } else {
+      isClickScrolling.current = false;
+    }
+
+    setIsMenuOpen(false);
+  };
 
   const containerStyle = useMemo(() => ({
     backgroundColor: "rgba(174, 162, 153, 0.08)",
@@ -93,7 +162,8 @@ export default function Navigation() {
     >
       <View style={styles.navBar}>
         <Text style={[styles.logo, { color: Colors.primary }]}>Portfolio</Text>
-        {Platform.OS === 'web' ? (
+        
+        {!isMobileLayout ? (
           <View style={styles.navItemsContainer}>
             <View style={styles.navItems}>
               {navItems.map((item) => (
@@ -101,97 +171,58 @@ export default function Navigation() {
                   key={item.id}
                   style={[
                     styles.navItem,
-                    activeSection === item.section && {
-                      backgroundColor: Colors.primary + '20',
-                    },
+                    activeSection === item.section ? { backgroundColor: Colors.primary + '20' } : {},
                   ]}
                   onPress={() => scrollToSection(item.section)}
                 >
-                  <Text
-                    style={[
-                      navItemTextStyle,
-                      activeSection === item.section && navItemTextActiveStyle,
-                    ]}
-                  >
+                  <Text style={[navItemTextStyle, activeSection === item.section && navItemTextActiveStyle]}>
                     {item.label}
                   </Text>
                 </Hoverable>
               ))}
             </View>
             <Hoverable
-              style={[
-                styles.themeToggleButton,
-                {
-                  backgroundColor: Colors.backgroundLight,
-                  borderColor: Colors.border,
-                },
-              ]}
+              style={[styles.themeToggleButton, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
               onPress={toggleTheme}
               activeOpacity={0.7}
             >
-              <Text style={[styles.themeIcon, { color: Colors.text }]}>
-                {isDark ? '☀️' : '🌙'}
-              </Text>
+              <Text style={[styles.themeIcon, { color: Colors.text }]}>{isDark ? '☀️' : '🌙'}</Text>
             </Hoverable>
           </View>
         ) : (
           <View style={styles.mobileNavRight}>
             <TouchableOpacity
-              style={[
-                styles.themeToggleButton,
-                {
-                  backgroundColor: Colors.backgroundLight,
-                  borderColor: Colors.border,
-                },
-              ]}
+              style={[styles.themeToggleButton, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
               onPress={toggleTheme}
               activeOpacity={0.7}
             >
-              <Text style={[styles.themeIcon, { color: Colors.text }]}>
-                {isDark ? '☀️' : '🌙'}
-              </Text>
+              <Text style={[styles.themeIcon, { color: Colors.text }]}>{isDark ? '☀️' : '🌙'}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.menuButton}
-              onPress={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <Text style={[styles.menuIcon, { color: Colors.text }]}>☰</Text>
+            <TouchableOpacity style={styles.menuButton} onPress={() => setIsMenuOpen(!isMenuOpen)}>
+              <Text style={[styles.menuIcon, { color: Colors.text }]}>{isMenuOpen ? '✕' : '☰'}</Text>
             </TouchableOpacity>
           </View>
         )}
       </View>
 
-      {isMenuOpen && Platform.OS !== 'web' && (
-        <View
-          style={[
-            styles.mobileMenu,
-            {
-              backgroundColor: Colors.background,
-              borderTopColor: Colors.border,
-            },
-          ]}
-        >
-          <ScrollView>
+      {isMenuOpen && isMobileLayout && (
+        <View style={[styles.mobileMenu, { backgroundColor: Colors.background, borderTopColor: Colors.border }]}>
+          <ScrollView keyboardShouldPersistTaps="handled">
             {navItems.map((item) => (
               <TouchableOpacity
                 key={item.id}
                 style={[
                   styles.mobileNavItem,
                   { borderBottomColor: Colors.border },
-                  activeSection === item.section && {
+                  activeSection === item.section ? {
                     backgroundColor: Colors.backgroundLight,
                     borderLeftWidth: 4,
                     borderLeftColor: Colors.primary,
-                  },
+                  } : {},
                 ]}
                 onPress={() => scrollToSection(item.section)}
               >
-                <Text
-                  style={[
-                    navItemTextStyle,
-                    activeSection === item.section && navItemTextActiveStyle,
-                  ]}
-                >
+                <Text style={[navItemTextStyle, activeSection === item.section && navItemTextActiveStyle]}>
                   {item.label}
                 </Text>
               </TouchableOpacity>
@@ -206,11 +237,14 @@ export default function Navigation() {
 const styles = StyleSheet.create({
   container: {
     zIndex: 1000,
+    width: '100%',
   },
   containerWeb: {
-    ...(Platform.OS === 'web' && {
-      position: 'sticky',
-      top: 0,
+    ...Platform.select({
+      web: {
+        position: 'sticky',
+        top: 0,
+      } as any,
     }),
   },
   navBar: {
@@ -258,6 +292,7 @@ const styles = StyleSheet.create({
   mobileMenu: {
     borderTopWidth: 1,
     maxHeight: 300,
+    width: '100%',
   },
   mobileNavItem: {
     paddingVertical: Spacing.md,
@@ -277,4 +312,3 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
-
