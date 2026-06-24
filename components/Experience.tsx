@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { Spacing, Typography, BorderRadius, lightColors, darkColors } from '@/constants/Theme';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -13,7 +14,10 @@ interface ExperienceItem {
   id: string;
   role: string;
   company: string;
-  period: string;
+  location: string;
+  startDate: string; // Changed to ISO date string format (YYYY-MM)
+  endDate?: string;  // Optional: undefined or empty string represents "Present"
+  periodDisplay: string; // The literal string to show for the calendar range text
   description: string[];
   technologies: string[];
 }
@@ -21,45 +25,63 @@ interface ExperienceItem {
 const experiences: ExperienceItem[] = [
   {
     id: '1',
-    role: 'Senior Full Stack Developer',
-    company: 'Tech Innovations Inc.',
-    period: '2022 - Present',
+    role: 'Associate Software Engineer',
+    company: 'Sparksupport Infotech Pvt Ltd.',
+    location: 'Kochi, India',
+    startDate: '2025-11', // November 2025
+    periodDisplay: '2025 - Present',
     description: [
-      'Led development of multiple client projects using React, Node.js, and cloud services',
-      'Mentored junior developers and conducted code reviews',
-      'Improved application performance by 40% through optimization',
+      'Contribute to enterprise-level backend development for robust and scalable applications.',
+      'Developed enterprise backend services using Java, Spring Boot, and Microservices architecture.',
+      'Built fault-tolerant distributed systems utilizing RabbitMQ for asynchronous messaging.',
+      'Debugged runtime issues, resolved bottlenecks, and optimized backend application performance.',
+      'Collaborated across Frontend, DevOps, and Testing teams for secure API integration and efficient deployment.'
     ],
-    technologies: ['React', 'Node.js', 'AWS', 'TypeScript'],
+    technologies: ['Java 8/17/21', 'Spring Boot', 'Microservices', 'RabbitMQ', 'MySQL', 'MariaDB', 'Spring Security', 'MongoDB', 'PostgreSQL', 'Spring Mail', 'Redis Cache', 'Elastic Search', 'JQuery', 'JUnit', 'JWT', 'OAuth2', 'Gradle', 'Maven', 'SFTP', 'Docker', 'CICD', 'Jenkins', 'Portainer', 'Git', 'Bitbucket', 'Jira'],
   },
   {
     id: '2',
-    role: 'Full Stack Developer',
-    company: 'Digital Solutions Ltd.',
-    period: '2020 - 2022',
+    role: 'Java Developer Trainee',
+    company: 'Sparksupport Infotech Pvt Ltd.',
+    location: 'Kochi, India',
+    startDate: '2025-07',
+    endDate: '2025-10',
+    periodDisplay: 'July 2025 - October 2025',
     description: [
-      'Developed and maintained web applications for enterprise clients',
-      'Collaborated with cross-functional teams to deliver high-quality products',
-      'Implemented responsive designs and mobile-first approaches',
+      'Gained practical training in backend concepts, efficiently building, debugging, and testing Spring Boot REST APIs.',
+      'Upskilled in DB management, optimized MySQL operations with Native Queries, JPQL, and Query DSL.',
+      'Mastered core features like Validation, Logging, Exception Handling, Profiling, Search, Sorting, and Pagination.',
+      'Applied SOLID principles and software development lifecycle (SDLC) best practices using Git version control.'
     ],
-    technologies: ['React', 'Spring Boot', 'PostgreSQL', 'Docker'],
-  },
-  {
-    id: '3',
-    role: 'Frontend Developer',
-    company: 'StartupXYZ',
-    period: '2019 - 2020',
-    description: [
-      'Built user interfaces for web and mobile applications',
-      'Worked with design teams to implement pixel-perfect UIs',
-      'Optimized applications for maximum speed and scalability',
-    ],
-    technologies: ['React', 'React Native', 'Redux', 'JavaScript'],
+    technologies: ['Java 8/17', 'Spring Boot', 'MySQL', 'JPA/Hibernate', 'REST API', 'DSA', 'OOPs', 'Design Patterns', 'Spring MVC', 'Spring Security', 'JFC', 'Git', 'GitHub'],
   },
 ];
 
 export default function Experience() {
   const { isDark } = useTheme();
+  const { width: windowWidth } = useWindowDimensions();
   const Colors = isDark ? darkColors : lightColors;
+
+  const isSmallScreen = windowWidth < 768;
+
+  // Helper function to calculate the duration dynamically using the Date object matrix
+  const calculateDuration = (startDateStr: string, endDateStr?: string): string => {
+    const start = new Date(startDateStr + '-01'); // Force first day of the month boundary
+    const end = endDateStr ? new Date(endDateStr + '-01') : new Date(); // Reverts to the current active system Date if "Present"
+
+    const totalMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+
+    const yearLabel = years === 1 ? 'year' : 'years';
+    const monthLabel = months === 1 ? 'month' : 'months';
+
+    if (years > 0) {
+      return `${years} ${yearLabel} ${months} ${monthLabel}`;
+    }
+    return `${months} ${monthLabel}`;
+  };
 
   return (
     <View nativeID="experience" style={styles.container}>
@@ -79,6 +101,7 @@ export default function Experience() {
         <Text style={[styles.subtitle, { color: Colors.textLight }]}>
           My career journey
         </Text>
+        
         <View style={styles.timeline}>
           {experiences.map((exp, index) => (
             <View key={exp.id} style={styles.timelineItem}>
@@ -98,18 +121,33 @@ export default function Experience() {
                       { backgroundColor: Colors.primary },
                     ]}
                   />
-                  <View style={styles.timelineInfo}>
-                    <Text style={[styles.role, { color: Colors.text }]}>
-                      {exp.role}
-                    </Text>
-                    <Text style={[styles.company, { color: Colors.primary }]}>
-                      {exp.company}
-                    </Text>
-                    <Text style={[styles.period, { color: Colors.textLight }]}>
-                      {exp.period}
-                    </Text>
+                  
+                  <View style={[styles.headerMainRow, { flexDirection: isSmallScreen ? 'column' : 'row' }]}>
+                    
+                    <View style={styles.leftInfoColumn}>
+                      <Text style={[styles.role, { color: Colors.text }]}>
+                        {exp.role}
+                      </Text>
+                      <Text style={[styles.company, { color: Colors.primary }]}>
+                        {exp.company}
+                      </Text>
+                      <Text style={[styles.experience, { color: Colors.textLight }]}>
+                        Duration: {calculateDuration(exp.startDate, exp.endDate)}
+                      </Text>
+                    </View>
+
+                    <View style={[styles.rightMetaColumn, { alignItems: isSmallScreen ? 'flex-start' : 'flex-end', marginTop: isSmallScreen ? 4 : 0 }]}>
+                      <Text style={[styles.location, { color: Colors.textLight }]}>
+                        📍 {exp.location}
+                      </Text>
+                      <Text style={[styles.period, { color: Colors.primary, fontWeight: '700' }]}>
+                        {exp.periodDisplay}
+                      </Text>
+                    </View>
+
                   </View>
                 </View>
+
                 <View style={styles.descriptionContainer}>
                   {exp.description.map((desc, descIndex) => (
                     <Text
@@ -120,13 +158,14 @@ export default function Experience() {
                     </Text>
                   ))}
                 </View>
+
                 <View style={styles.technologiesContainer}>
                   {exp.technologies.map((tech, techIndex) => (
                     <View
                       key={techIndex}
                       style={[
                         styles.techTag,
-                        { backgroundColor: Colors.primary + '20' },
+                        { backgroundColor: Colors.primary + '15' },
                       ]}
                     >
                       <Text
@@ -138,6 +177,7 @@ export default function Experience() {
                   ))}
                 </View>
               </Hoverable>
+              
               {index < experiences.length - 1 && (
                 <View
                   style={[styles.timelineLine, { backgroundColor: Colors.border }]}
@@ -184,75 +224,105 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   timeline: {
+    width: '100%',
     ...(Platform.OS === 'web' && {
-      maxWidth: 800,
+      maxWidth: 820,
       alignSelf: 'center',
     }),
   },
   timelineItem: {
-    marginBottom: Spacing.xl,
+    position: 'relative',
+    marginBottom: Spacing.md,
+    width: '100%',
   },
   timelineContent: {
     padding: Spacing.lg,
     borderRadius: BorderRadius.md,
     borderLeftWidth: 4,
+    width: '100%',
+    cursor: 'auto',
   },
   timelineHeader: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     marginBottom: Spacing.md,
+    width: '100%',
   },
   timelineDot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 12,
+    height: 12,
+    borderRadius: BorderRadius.full,
     marginRight: Spacing.md,
-    marginTop: Spacing.xs,
+    marginTop: 8,
   },
-  timelineInfo: {
+  headerMainRow: {
     flex: 1,
+    justifyContent: 'space-between',
+    width: '100%',
+    cursor: 'auto',
+  },
+  leftInfoColumn: {
+    flex: 1,
+    width: '100%',
+  },
+  rightMetaColumn: {
+    justifyContent: 'flex-start',
   },
   role: {
-    ...Typography.h4,
-    marginBottom: Spacing.xs,
+    fontSize: 20,
+    fontWeight: '800',
+    letterSpacing: 0.2,
+    marginBottom: 4,
+    opacity: 0.8,
   },
   company: {
-    ...Typography.body,
+    fontSize: 16,
     fontWeight: '600',
-    marginBottom: Spacing.xs,
+    marginBottom: 6,
+  },
+  experience: {
+    fontSize: 14,
+    fontWeight: '500',
+    opacity: 0.8,
+  },
+  location: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
   },
   period: {
-    ...Typography.bodySmall,
+    fontSize: 13,
   },
   descriptionContainer: {
-    marginBottom: Spacing.md,
-    paddingLeft: Spacing.md,
+    marginBottom: Spacing.lg,
+    paddingLeft: Spacing.sm,
   },
   descriptionItem: {
-    ...Typography.bodySmall,
+    fontSize: 15,
     lineHeight: 24,
-    marginBottom: Spacing.xs,
+    marginBottom: 6,
+    textAlign: 'justify',
   },
   technologiesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.xs,
-    paddingLeft: Spacing.md,
+    gap: 6,
+    paddingLeft: Spacing.sm,
   },
   techTag: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: BorderRadius.sm,
   },
   techTagText: {
-    ...Typography.bodySmall,
+    fontSize: 12,
     fontWeight: '600',
   },
   timelineLine: {
     width: 2,
-    height: Spacing.lg,
-    marginLeft: Spacing.sm + 6,
-    marginTop: -Spacing.md,
-    marginBottom: Spacing.md,
+    height: 32,
+    marginLeft: 5,
+    marginTop: Spacing.xs,
+    opacity: 0.3,
   },
 });
-
