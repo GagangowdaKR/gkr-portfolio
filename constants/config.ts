@@ -1,10 +1,10 @@
 import { Platform } from 'react-native';
 
 // Set this to true when you want to test against your local Spring Boot instance
-const USE_LOCAL_BACKEND = true; 
+const USE_LOCAL_BACKEND = true;  // {true / false} - Toggle for local backend testing
 
 // Localhost routing configuration
-const LOCAL_API_URL = Platform.OS === 'web' 
+const LOCAL_API_URL = Platform.OS === 'web'
   ? 'http://localhost:8080' 
   : 'http://10.0.2.2:8080'; // Maps to localhost for Android Emulators
 
@@ -12,7 +12,7 @@ const LOCAL_API_URL = Platform.OS === 'web'
 const TEST_API_URL = 'https://gkr-portfolio-backend-test.onrender.com';
 
 // Fallback Production instance configuration
-const PROD_API_URL = 'https://gkr-portfolio-backend.com'; 
+const PROD_API_URL = 'https://gkr-portfolio-backend.com';
 
 export const CONFIG = {
   /**
@@ -31,5 +31,7 @@ export const CONFIG = {
   ENDPOINTS: {
     DOWNLOAD_RESUME: '/api/gkr/resume/download',
     REQUEST_RESUME: '/api/gkr/resume/request',
+    SUBMIT_CONTACT: '/api/gkr/contact/request',
+    GET_VERSION: '/api/gkr/util/detail',
   }
 };
