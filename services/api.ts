@@ -97,5 +97,55 @@ export const ApiService = {
       console.error('Failed to execute backend file stream extraction:', error);
       throw error;
     }
+  },
+
+
+  /**
+   * Dispatches contact message payloads using dynamic base URL resolutions from config endpoints
+  */
+  async submitContactMessage(payload: MessagePayload): Promise<boolean> {
+    // Resolved completely using global object configurations without hardcoded values
+    const targetUrl = `${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.SUBMIT_CONTACT}`;
+
+    try {
+      const response = await fetch(targetUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      return response.ok;
+    } catch (error) {
+      console.error('Failed to dispatch message request to backend database system:', error);
+      return false;
+    }
+  },
+
+
+  // Append this method to your existing ApiService object export tree
+  /**
+   * Retrieves the current system deployment version string from build.gradle variables
+  */
+  async getSystemVersion(): Promise<string> {
+    const targetUrl = `${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.GET_VERSION}`;
+
+    try {
+      const response = await fetch(targetUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/plain, application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('Version endpoint responded with non-200 block');
+
+      const versionText = await response.text();
+      return versionText.trim();
+    } catch (error) {
+      console.error('Failed to resolve system build context parameters:', error);
+      return '1.0.0-OFFLINE';
+    }
   }
 };

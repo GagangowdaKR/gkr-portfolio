@@ -16,6 +16,7 @@ import Experience from '@/components/Experience';
 import Contact from '@/components/Contact';
 import Navigation from '@/components/Navigation';
 import Coding from '@/components/Coding';
+import Footer from '@/components/Footer';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -37,6 +38,7 @@ export default function HomeScreen() {
         <Projects />
         <Experience />
         <Contact />
+        <Footer />
       </ScrollView>
     </View>
   );
