@@ -5,136 +5,228 @@ import {
   StyleSheet,
   Platform,
   TextInput,
-  ScrollView,
   Alert,
   Linking,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import * as Clipboard from 'expo-clipboard';
 import { Spacing, Typography, BorderRadius, lightColors, darkColors } from '@/constants/Theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import Hoverable from './Hoverable';
+import { ApiService } from '../services/api'; 
+
+interface SocialItem {
+  id: string;
+  iconSource: any;
+  fallbackEmoji: string;
+  label: string;
+  value: string;
+  url: string;
+}
 
 export default function Contact() {
   const { isDark } = useTheme();
   const Colors = isDark ? darkColors : lightColors;
+  
   const [name, setName] = useState('');
+  const [profession, setProfession] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const handleSubmit = () => {
-    if (!name || !email || !message) {
-      Alert.alert('Error', 'Please fill in all fields');
+  // Directly mapping your dynamic asset folder image icons array parameters
+  const socialItems: SocialItem[] = [
+    { id: 'phone', iconSource: require('@/assets/contact-icons/Phone.png'), fallbackEmoji: '📱', label: 'Call Phone', value: '+91 63641 09281', url: 'tel:+916364109281' },
+    { id: 'email', iconSource: require('@/assets/contact-icons/Email.png'), fallbackEmoji: '📧', label: 'Send Email', value: 'gagandarshan22@gmail.com', url: 'mailto:gagandarshan22@gmail.com' },
+    { id: 'linkedin', iconSource: require('@/assets/contact-icons/LinkedIn.png'), fallbackEmoji: '🔗', label: 'LinkedIn Profile', value: 'linkedin.com/in/gagan-gowda-k-r', url: 'https://linkedin.com/in/gagan-gowda-k-r' },
+    { id: 'github', iconSource: require('@/assets/contact-icons/Github.png'), fallbackEmoji: '💼', label: 'GitHub Repository', value: 'github.com/GagangowdaKR', url: 'https://github.com/GagangowdaKR' },
+    { id: 'youtube', iconSource: require('@/assets/contact-icons/YouTube.png'), fallbackEmoji: '📺', label: 'YouTube Channel', value: 'youtube.com/@gkr_dancer', url: 'https://www.youtube.com/@gkr_dancer' },
+    // { id: 'instagram', iconSource: require('@/assets/contact-icons/Insta.png'), fallbackEmoji: '📸', label: 'Instagram Profile', value: '@gagan_gowda', url: 'https://instagram.com' },
+  ];
+
+  const displayAlert = (title: string, msg: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}: ${msg}`);
+    } else {
+      Alert.alert(title, msg);
+    }
+  };
+
+  const handleCopy = async (value: string, id: string) => {
+    try {
+      await Clipboard.setStringAsync(value);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch (err) {
+      console.error('Failed to access native device copy clipboard channels:', err);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!name || !profession || !email || !message) {
+      displayAlert('Validation Error', 'Please fill in all mandatory fields (*).');
       return;
     }
-    // Here you would typically send the data to your backend
-    Alert.alert(
-      'Success',
-      'Thank you for your message! I will get back to you soon.',
-      [
-        {
-          text: 'OK',
-          onPress: () => {
-            setName('');
-            setEmail('');
-            setMessage('');
-          },
-        },
-      ]
-    );
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      displayAlert('Validation Error', 'Please enter a valid email address.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    const isSuccess = await ApiService.submitContactMessage({
+      name: name.trim(),
+      profession: profession.trim(),
+      email: email.trim().toLowerCase(),
+      phno: phone.trim() || undefined,
+      message: message.trim(),
+    });
+
+    setIsLoading(false);
+
+    if (isSuccess) {
+      displayAlert('Success', 'Contact request created, will be in touch soon!');
+      setName('');
+      setProfession('');
+      setEmail('');
+      setPhone('');
+      setMessage('');
+    } else {
+      displayAlert('Submission Failure', 'Failed to dispatch contact request. Please verify connection bounds.');
+    }
   };
 
   const openLink = (url: string) => {
     Linking.openURL(url).catch((err) =>
-      console.error('Failed to open URL:', err)
+      console.error('Failed to parse open hyperlink transaction root:', err)
     );
   };
 
   return (
     <View nativeID="contact" style={styles.container}>
-      {/* <LinearGradient
-        colors={[Colors.gray600, Colors.gray600]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradient}
-      > */}
-        <View style={[styles.content, { backgroundColor: Colors.background, borderColor: Colors.border, borderWidth: 1 }]}>
-          <Text style={styles.title}>Contact Me</Text>
-          <View style={styles.divider} />
-          <Text style={[styles.subtitle, { color: Colors.textLight }]}>
-            I value open communication. For inquiries or collaborations, feel free to reach out.
-          </Text>
+      <View style={[styles.content, { backgroundColor: Colors.background, borderColor: Colors.border, borderWidth: 1 }]}>
+        <Text style={[styles.title, { color: Colors.text }]}>Contact Me</Text>
+        <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
+        <Text style={[styles.subtitle, { color: Colors.textLight }]}>
+          I value open communication and look forward to building meaningful connections. Feel free to interact with my socials below to view data channels or copy text metrics directly.
+        </Text>
 
-          <View style={[styles.contactInfo]}>
-            <Hoverable
-              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
-              onPress={() => openLink('mailto:gagandarshan22@gmail.com')}
-            >
-              <Text style={styles.contactIcon}>📧</Text>
-              <Text style={[styles.contactText, { color: Colors.textLight }]}>gagandarshan22@gmail.com</Text>
-            </Hoverable>
-            <Hoverable
-              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
-              onPress={() => openLink('tel:+916364109281')}
-            >
-              <Text style={styles.contactIcon}>📱</Text>
-              <Text style={[styles.contactText, { color: Colors.textLight }]}>+91 63641 09281</Text>
-            </Hoverable>
-            <Hoverable
-              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
-              onPress={() => openLink('https://github.com/yourusername')}
-            >
-              <Text style={styles.contactIcon}>💼</Text>
-              <Text style={[styles.contactText, { color: Colors.textLight }]}>GitHub</Text>
-            </Hoverable>
-            <Hoverable
-              style={[styles.contactItem, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1  }]}
-              onPress={() => openLink('https://linkedin.com/in/yourusername')}
-            >
-              <Text style={styles.contactIcon}>🔗</Text>
-              <Text style={[styles.contactText, { color: Colors.textLight }]}>LinkedIn</Text>
-            </Hoverable>
+        <View style={styles.mainFormWrapper}>
+          
+          {/* Circular Platforms Tray Row Container */}
+          <View style={styles.socialCirclesContainer}>
+            {socialItems.map((item) => (
+              <View key={item.id} style={styles.circleContainerWrapper}>
+                <Hoverable
+                  style={[styles.circleButton, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
+                  hoverStyle={{ transform: [{ scale: 1.08 }] }}
+                  onPress={() => openLink(item.url)}
+                  {...(Platform.OS === 'web' ? {
+                    onMouseEnter: () => setHoveredItem(item.id),
+                    onMouseLeave: () => setHoveredItem(null),
+                  } : {})}
+                >
+                  <Image 
+                    source={item.iconSource} 
+                    style={styles.circleIconImage}
+                    resizeMode="contain"
+                    // Dynamic layout placeholder fallback in case image references break
+                    defaultSource={require('@/assets/adaptive-icon.png')} 
+                  />
+                </Hoverable>
+
+                {/* Adaptive Metadata Overlay Tooltip Bubble */}
+                {hoveredItem === item.id && (
+                  <View style={[styles.tooltipBubble, { backgroundColor: Colors.background, borderColor: Colors.border }]}>
+                    <Text numberOfLines={1} style={[styles.tooltipText, { color: Colors.text }]}>
+                      {item.value}
+                    </Text>
+                    <TouchableOpacity 
+                      style={[styles.copyButton, { backgroundColor: Colors.primary + '15' }]} 
+                      onPress={() => handleCopy(item.value, item.id)}
+                    >
+                      <Text style={[styles.copyButtonText, { color: Colors.primary }]}>
+                        {copiedId === item.id ? 'Saved! ✓' : 'Copy 📋'}
+                      </Text>
+                    </TouchableOpacity>
+                    <View style={[styles.tooltipArrow, { borderTopColor: Colors.border }]} />
+                  </View>
+                )}
+              </View>
+            ))}
           </View>
 
+          {/* Core Input Form Block Card Layout */}
           <View style={styles.form}>
             <TextInput
-              style={[styles.input, { color: Colors.primary, borderColor: Colors.border, borderWidth: 1 }]}
-              placeholder="Your Name"
-              placeholderTextColor="#999"
+              style={[styles.input, { color: Colors.text, backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
+              placeholder="Your Name *"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={name}
               onChangeText={setName}
+              editable={!isLoading}
             />
             <TextInput
-              style={[styles.input, { color: Colors.primary, borderColor: Colors.border, borderWidth: 1 }]}
-              placeholder="Your Email"
-              placeholderTextColor="#999"
+              style={[styles.input, { color: Colors.text, backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
+              placeholder="Your Profession *"
+              placeholderTextColor={isDark ? '#666' : '#999'}
+              value={profession}
+              onChangeText={setProfession}
+              editable={!isLoading}
+            />
+            <TextInput
+              style={[styles.input, { color: Colors.text, backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
+              placeholder="Your Email *"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              editable={!isLoading}
             />
             <TextInput
-              style={[styles.input, styles.messageInput, { color: Colors.primary, borderColor: Colors.border, borderWidth: 1 }]}
-              placeholder="Your Message"
-              placeholderTextColor="#999"
+              style={[styles.input, { color: Colors.text, backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
+              placeholder="Your Phone Number (Optional)"
+              placeholderTextColor={isDark ? '#666' : '#999'}
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+              editable={!isLoading}
+            />
+            <TextInput
+              style={[styles.input, styles.messageInput, { color: Colors.text, backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}
+              placeholder="Your Message *"
+              placeholderTextColor={isDark ? '#666' : '#999'}
               value={message}
               onChangeText={setMessage}
               multiline
               numberOfLines={6}
               textAlignVertical="top"
+              editable={!isLoading}
             />
+            
             <Hoverable
-              style={styles.submitButton}
+              style={[styles.submitButton, { backgroundColor: Colors.primary + '15', borderColor: Colors.primary, borderWidth: 1 }]}
+              hoverStyle={!isLoading ? { backgroundColor: Colors.primary + '25', transform: [{ scale: 1.01 }] } : {}}
               onPress={handleSubmit}
+              disabled={isLoading}
             >
-              <Text style={styles.submitButtonText}>Send Message</Text>
+              {isLoading ? (
+                <ActivityIndicator color={Colors.primary} size="small" />
+              ) : (
+                <Text style={[styles.submitButtonText, { color: Colors.primary }]}>Send Message</Text>
+              )}
             </Hoverable>
           </View>
         </View>
-      {/* </LinearGradient> */}
-      <View style={styles.footer}>
-        <Text style={[styles.footerText, { color: Colors.textLight }]}>
-          © 2024 Gagan Gowda K R
-        </Text>
       </View>
     </View>
   );
@@ -146,113 +238,174 @@ const styles = StyleSheet.create({
     padding: Spacing.sm,
     minHeight: Platform.OS === 'web' ? 600 : 500,
     marginBottom: Spacing.xl,
+    ...Platform.select({
+      web: { boxSizing: 'border-box' } as any,
+    }),
     ...(Platform.OS === 'web' && {
       maxWidth: 1175,
-      alignSelf: 'center',
-    }),
-  },
-  gradient: {
-    flex: 1,
-    width: '100%',
-    paddingVertical: Spacing.xxl,
-    paddingHorizontal: Spacing.lg,
-    borderRadius: BorderRadius.lg,
-    ...(Platform.OS === 'web' && {
-      maxWidth: 1200,
       alignSelf: 'center',
     }),
   },
   content: {
     padding: Spacing.xl,
     borderRadius: BorderRadius.lg,
-    flex: 1,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: Spacing.xl,
+    ...Platform.select({
+      web: { boxSizing: 'border-box' } as any,
+    }),
   },
   title: {
     ...Typography.h2,
-    color: 'rgba(255, 102, 0, 0.24)',
     marginBottom: Spacing.md,
     textAlign: 'center',
   },
   divider: {
     width: 60,
     height: 4,
-    backgroundColor: '#ffffff',
     borderRadius: BorderRadius.sm,
     marginBottom: Spacing.md,
   },
   subtitle: {
     ...Typography.body,
-    color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
     marginBottom: Spacing.xl,
+    maxWidth: 750,
+    lineHeight: 24,
   },
-  contactInfo: {
-    flexDirection: Platform.OS === 'web' ? 'column-reverse' : 'column',
-    gap: Spacing.md,
-    marginBottom: Spacing.xl,
+  mainFormWrapper: {
     width: '100%',
-    maxWidth: 300,
-  },
-  contactItem: {
-    flexDirection: 'row',
+    maxWidth: 650,
+    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: Spacing.md,
-    borderRadius: BorderRadius.md,
-    flex: Platform.OS === 'web' ? 1 : undefined,
-    ...(Platform.OS !== 'web' && {
-      width: '100%',
+    gap: Spacing.lg,
+    ...Platform.select({
+      web: { boxSizing: 'border-box' } as any,
     }),
   },
-  contactIcon: {
-    fontSize: 24,
-    marginRight: Spacing.sm,
+  socialCirclesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: Spacing.md,
+    width: '100%',
+    marginBottom: Spacing.lg,
+    zIndex: 10,
   },
-  contactText: {
-    ...Typography.body,
-    color: '#ffffff',
+  circleContainerWrapper: {
+    position: 'relative',
+    alignItems: 'center',
+  },
+  circleButton: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 12, // Cleans spacing balance within asset bounds boundaries
+    ...Platform.select({
+      web: { 
+        transition: 'all 0.15s ease-in-out',
+        cursor: 'pointer',
+        boxShadow: '0px 4px 12px rgba(0,0,0,0.05)'
+      } as any,
+    }),
+  },
+  circleIconImage: {
+    width: '100%',
+    height: '100%',
+  },
+  tooltipBubble: {
+    position: 'absolute',
+    bottom: 64, 
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    minWidth: 220,
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
+    ...Platform.select({
+      web: {
+        boxShadow: '0px 6px 18px rgba(0,0,0,0.15)',
+      } as any
+    })
+  },
+  tooltipText: {
+    fontSize: 12,
+    fontWeight: '500',
+    flex: 1,
+    flexShrink: 1,
+  },
+  copyButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.sm,
+  },
+  copyButtonText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  tooltipArrow: {
+    position: 'absolute',
+    bottom: -6,
+    alignSelf: 'center',
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderTopWidth: 6,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
   },
   form: {
     width: '100%',
-    maxWidth: 600,
+    ...Platform.select({
+      web: { boxSizing: 'border-box' } as any,
+    }),
   },
   input: {
-    backgroundColor: 'rgba(163, 125, 125, 0.1)',
     padding: Spacing.md,
     borderRadius: BorderRadius.md,
-    ...Typography.body,
-    // color: '#3868aa',
+    fontSize: 14,
     marginBottom: Spacing.md,
-    borderWidth: 2,
-    // borderColor: 'rgba(255, 102, 0, 0.15)',
+    borderWidth: 1,
+    width: '100%', 
+    maxWidth: '100%', 
+    ...Platform.select({
+      web: { boxSizing: 'border-box' } as any,
+    }), 
   },
   messageInput: {
-    minHeight: 120,
+    minHeight: 140,
     paddingTop: Spacing.md,
   },
   submitButton: {
-    backgroundColor: 'rgba(255, 102, 0, 0.15)',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.full,
     alignItems: 'center',
-    marginTop: Spacing.md,
+    justifyContent: 'center',
+    marginTop: Spacing.xs,
+    width: '100%',
+    maxWidth: '100%',
+    ...Platform.select({
+      web: { 
+        boxSizing: 'border-box',
+        transition: 'all 0.2s ease-in-out', 
+        cursor: 'pointer' 
+      } as any
+    }),
   },
   submitButtonText: {
-    ...Typography.body,
-    color: '#6366f1',
-    fontWeight: '600',
-  },
-  footer: {
-    paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.lg,
-    alignItems: 'center',
-  },
-  footerText: {
-    ...Typography.bodySmall,
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
 });
-

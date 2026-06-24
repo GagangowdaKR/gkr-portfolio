@@ -8,6 +8,14 @@ export interface ContactPayload {
   email?: string;
 }
 
+export interface MessagePayload {
+  name: string;
+  profession: string;
+  email: string;
+  phno?: string;
+  message: string;
+}
+
 export const ApiService = {
   /**
    * Submits a resume download request to the backend validation endpoint
@@ -24,11 +32,32 @@ export const ApiService = {
         },
         body: JSON.stringify(payload),
       });
-
-      // Returns true if status code is 200 OK (accommodates your backend response entity)
       return response.ok;
     } catch (error) {
       console.error('Failed to dispatch resume access request payload:', error);
+      return false;
+    }
+  },
+
+  /**
+   * Dispatches contact message payloads using dynamic base URL resolutions from config endpoints
+   */
+  async submitContactMessage(payload: MessagePayload): Promise<boolean> {
+    // Resolved completely using global object configurations without hardcoded values
+    const targetUrl = `${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.SUBMIT_CONTACT}`; 
+
+    try {
+      const response = await fetch(targetUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      return response.ok;
+    } catch (error) {
+      console.error('Failed to dispatch message request to backend database system:', error);
       return false;
     }
   },
