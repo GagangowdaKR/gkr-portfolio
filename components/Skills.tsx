@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,8 @@ import {
   Image,
   Animated,
   Easing,
-  Dimensions,
+  TouchableOpacity,
+  useWindowDimensions,
 } from 'react-native';
 import {
   Spacing,
@@ -18,9 +19,6 @@ import {
 } from '@/constants/Theme';
 import { useTheme } from '@/contexts/ThemeContext';
 
-const { width } = Dimensions.get('window');
-
-// ✅ Local static asset references using require()
 const skillIcons = [
   { name: 'Java', icon: require('../assets/skill-icons/Java.png') },
   { name: 'Spring Boot', icon: require('../assets/skill-icons/Spring Boot.png') },
@@ -66,6 +64,10 @@ const skillIcons = [
 export default function Skills() {
   const { isDark } = useTheme();
   const Colors = isDark ? darkColors : lightColors;
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
+  const [expanded, setExpanded] = useState(false);
 
   const animations = useRef(skillIcons.map(() => new Animated.Value(0))).current;
 
@@ -94,6 +96,10 @@ export default function Skills() {
     return () => loops.forEach((loop) => loop.stop());
   }, [animations]);
 
+  // Top 9 skills rendered on mobile when collapsed
+  const visibleSkills = isMobile && !expanded ? skillIcons.slice(0, 9) : skillIcons;
+  const remainingCount = skillIcons.length - 9;
+
   return (
     <View nativeID="skills" style={styles.container}>
       <View
@@ -113,9 +119,9 @@ export default function Skills() {
           Tools and technologies I use
         </Text>
 
-        {/* Floating icons */}
+        {/* Skill Icons Grid */}
         <View style={styles.iconGrid}>
-          {skillIcons.map((skill, index) => {
+          {visibleSkills.map((skill, index) => {
             const translateY = animations[index].interpolate({
               inputRange: [0, 1],
               outputRange: [0, -8],
@@ -130,7 +136,7 @@ export default function Skills() {
                 ]}
               >
                 <Image
-                  source={skill.icon} // ✅ Directly passing the locally requested asset resource mapping object
+                  source={skill.icon}
                   style={styles.skillIcon}
                   resizeMode="contain"
                 />
@@ -141,6 +147,25 @@ export default function Skills() {
             );
           })}
         </View>
+
+        {/* Centered Toggle Button placed cleanly below the grid on mobile */}
+        {isMobile && (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[
+              styles.toggleButton,
+              {
+                backgroundColor: Colors.primary + '18',
+                borderColor: Colors.primary,
+              },
+            ]}
+            onPress={() => setExpanded(!expanded)}
+          >
+            <Text style={[styles.toggleButtonText, { color: Colors.primary }]}>
+              {expanded ? 'Show Less ↑' : `+${remainingCount} More Skills ↓`}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -204,5 +229,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     textAlign: 'center',
+  },
+  toggleButton: {
+    marginTop: Spacing.xl,
+    paddingVertical: Spacing.sm + 2,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    alignSelf: 'center',
+  },
+  toggleButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.3,
   },
 });
