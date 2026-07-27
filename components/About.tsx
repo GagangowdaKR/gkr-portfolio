@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { Spacing, Typography, BorderRadius, lightColors, darkColors } from '@/constants/Theme';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -11,6 +12,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 export default function About() {
   const { isDark } = useTheme();
   const Colors = isDark ? darkColors : lightColors;
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
 
   return (
     <View nativeID="about" style={styles.container}>
@@ -28,16 +31,19 @@ export default function About() {
           or collaborating across cross-functional teams, I am always eager to enhance my technical expertise and deliver high-quality 
           software solutions.
         </Text>
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
+        <View style={[
+          styles.statsContainer, 
+          { flexDirection: isMobile ? 'column' : 'row' }
+        ]}>
+          <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
             <Text style={[styles.statNumber, { color: Colors.primary }]}>Java</Text>
             <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Java - 8 / 17 / 21 / 25</Text>
           </View>
-          <View style={styles.statItem}>
+          <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
             <Text style={[styles.statNumber, { color: Colors.primary }]}>Spring Boot</Text>
             <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Spring Boot - 3.0 / 4.0</Text>
           </View>
-          <View style={styles.statItem}>
+          <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
             <Text style={[styles.statNumber, { color: Colors.primary }]}>Microservices</Text>
             <Text style={[styles.statLabel, { color: Colors.textLight }]}>Distributed System Architecture</Text>
           </View>
@@ -80,23 +86,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   statsContainer: {
-    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     justifyContent: 'space-around',
     marginTop: Spacing.xl,
-    gap: Spacing.lg,
+    gap: Spacing.xl,
   },
   statItem: {
     alignItems: 'center',
-    flex: Platform.OS === 'web' ? 1 : undefined,
   },
   statNumber: {
     ...Typography.h2,
     marginBottom: Spacing.xs,
+    textAlign: 'center',
   },
   statLabel: {
     ...Typography.bodySmall,
     textTransform: 'uppercase',
     letterSpacing: 1,
+    textAlign: 'center',
   },
 });
-
