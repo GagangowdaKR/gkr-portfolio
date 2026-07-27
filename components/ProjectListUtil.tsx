@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   TextInput,
+  useWindowDimensions,
 } from 'react-native';
 import { Spacing, BorderRadius } from '@/constants/Theme';
 import Hoverable from './Hoverable';
@@ -69,14 +70,14 @@ export default function ProjectListUtil({
   onLinkPress,
   Colors,
 }: ProjectListUtilProps) {
-  // Local full-text lookup state tracking variable
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
   
   const formatCategoryLabel = (category: string) => {
     return category.replace(/_/g, ' ').replace(/([A-Z]+)(\d+)/g, '$1 $2');
   };
 
-  // Full-Text filtering architecture comparing query text against both project titles and categories
   const filteredProjects = extraProjects.filter((project) => {
     const query = searchQuery.toLowerCase().trim();
     const titleMatch = project.title.toLowerCase().includes(query);
@@ -97,14 +98,25 @@ export default function ProjectListUtil({
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}>
           
-          <View style={styles.modalHeaderFixedRow}>
+          <View style={[
+            styles.modalHeaderFixedRow, 
+            { 
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'flex-start' : 'center',
+            }
+          ]}>
             <Text style={[styles.modalTitle, { color: Colors.primary }]}>Projects Vault</Text>
             
-            {/* Right Corner Search Input Container Group */}
-            <View style={[styles.searchBoxWrapper, { borderColor: Colors.border, backgroundColor: Colors.background + '40' }]}>
-              {/* Optional Search Icon inside layout asset folder. Using system Search icon or tint wrapper */}
+            <View style={[
+              styles.searchBoxWrapper, 
+              { 
+                borderColor: Colors.border, 
+                backgroundColor: Colors.background + '40',
+                width: isMobile ? '100%' : 240,
+              }
+            ]}>
               <Image 
-                source={require('../assets/Search.png')} // Swap path dynamically if dedicated search asset is available
+                source={require('../assets/Search.png')}
                 style={[styles.searchIconImage, { tintColor: Colors.primary }]} 
               />
               <TextInput
@@ -142,26 +154,25 @@ export default function ProjectListUtil({
                     </View>
                   </View>
 
-                    <View style={styles.modalLinkWithLabelStack}>
+                  <View style={styles.modalLinkWithLabelStack}>
                     {project.github ? (
-                        <>
+                      <>
                         <Hoverable
-                            style={[styles.ctaLargeModal, { backgroundColor: Colors.primary + '20', borderColor: Colors.border, borderWidth: 1 }]}
-                            hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 14px ${Colors.primary}40` } }) }}
-                            onPress={() => onLinkPress(project.github)}
+                          style={[styles.ctaLargeModal, { backgroundColor: Colors.primary + '20', borderColor: Colors.border, borderWidth: 1 }]}
+                          hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 14px ${Colors.primary}40` } }) }}
+                          onPress={() => onLinkPress(project.github)}
                         >
-                            <Image source={require('../assets/GithubLink.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.primary }]} />
+                          <Image source={require('../assets/GithubLink.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.primary }]} />
                         </Hoverable>
                         <Text style={[styles.modalActionTextLabel, { color: Colors.primary }]}>Code</Text>
-                        </>
+                      </>
                     ) : (
-                        /* Clean, stylized badge fallback for hidden or unlinked source repositories */
-                        <View style={[styles.privateBadgeContainer, { backgroundColor: Colors.secondary + '30', borderColor: Colors.border, borderWidth: 1 }]}>
+                      <View style={[styles.privateBadgeContainer, { backgroundColor: Colors.secondary + '30', borderColor: Colors.border, borderWidth: 1 }]}>
                         <Image source={require('../assets/BitbucketPrivate.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.textLight, opacity: 0.5 }]} />
                         <Text style={[styles.privateBadgeText, { color: Colors.primary }]}>Private</Text>
-                        </View>
+                      </View>
                     )}
-                    </View>
+                  </View>
                 </View>
               ))
             ) : (
@@ -199,7 +210,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '100%',
-    maxWidth: 680, // Expanded slightly to provide breathing room for the input block row
+    maxWidth: 680,
     maxHeight: '75%',
     borderRadius: BorderRadius.xl,
     borderWidth: 1,
@@ -212,13 +223,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   modalHeaderFixedRow: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: Spacing.lg,
     width: '100%',
     paddingHorizontal: Spacing.xl,
-    flexWrap: Platform.OS === 'web' ? 'nowrap' : 'wrap',
     gap: Spacing.md,
   },
   modalTitle: {
@@ -232,7 +240,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: BorderRadius.full,
     paddingHorizontal: Spacing.sm,
-    width: Platform.OS === 'web' ? 240 : '100%',
     height: 38,
   },
   searchIconImage: {
