@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
+  Image,
   useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -41,7 +42,8 @@ export default function Navigation() {
 
   // A mutable ref flag to bypass intersection observer updates during smooth auto-scrolling
   const isClickScrolling = useRef(false);
-const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Injects dynamic scroll padding bounds to prevent elements from ducking under the fixed navbar
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof document === 'undefined') return;
@@ -161,8 +163,24 @@ const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
       ]}
     >
       <View style={styles.navBar}>
-        <Text style={[styles.logo, { color: Colors.primary }]}>Portfolio</Text>
-        
+        {/* Replacing Text Logo with static PNG image asset reference */}
+        <TouchableOpacity 
+          activeOpacity={0.8} 
+          onPress={() => scrollToSection('hero')}
+        >
+          <Image
+            source={require('../assets/Logo.png')}
+            style={[styles.logoImage, {backgroundColor: Colors.secondary + '20', borderColor: Colors.border, borderWidth: 1}]}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+        {/* style={[
+          styles.content,
+          {
+            backgroundColor: Colors.backgroundLight,
+            borderColor: Colors.border,
+          },
+        ]} */}
         {!isMobileLayout ? (
           <View style={styles.navItemsContainer}>
             <View style={styles.navItems}>
@@ -186,7 +204,7 @@ const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
               onPress={toggleTheme}
               activeOpacity={0.7}
             >
-              <Text style={[styles.themeIcon, { color: Colors.text }]}>{isDark ? '☀️' : '🌙'}</Text>
+              <Text style={[styles.themeIcon, { color: Colors.text }]}>{isDark ? '🌞' : '🌚'}</Text>
             </Hoverable>
           </View>
         ) : (
@@ -196,7 +214,7 @@ const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
               onPress={toggleTheme}
               activeOpacity={0.7}
             >
-              <Text style={[styles.themeIcon, { color: Colors.text }]}>{isDark ? '☀️' : '🌙'}</Text>
+              <Text style={[styles.themeIcon, { color: Colors.text }]}>{isDark ? '🌞' : '🌚'}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuButton} onPress={() => setIsMenuOpen(!isMenuOpen)}>
               <Text style={[styles.menuIcon, { color: Colors.text }]}>{isMenuOpen ? '✕' : '☰'}</Text>
@@ -259,9 +277,11 @@ const styles = StyleSheet.create({
       width: '100%',
     }),
   },
-  logo: {
-    ...Typography.h3,
-    fontWeight: '900',
+  logoImage: {
+    width: 65,
+    height: 38,
+    borderRadius: BorderRadius.sm,
+    borderStyle: 'dashed'
   },
   navItemsContainer: {
     flexDirection: 'row',
