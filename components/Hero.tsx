@@ -10,7 +10,8 @@ import {
   TextInput,
   TouchableOpacity,
   Pressable,
-  ScrollView
+  ScrollView,
+  useWindowDimensions,
 } from 'react-native';
 import {
   Spacing,
@@ -37,6 +38,8 @@ if (Platform.OS !== 'web') {
 export default function Hero() {
   const { isDark } = useTheme();
   const Colors = isDark ? darkColors : lightColors;
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
 
   // Modal 1: Resume Download Form States
   const [modalVisible, setModalVisible] = useState(false);
@@ -94,7 +97,7 @@ export default function Hero() {
     <View nativeID="hero" style={styles.container}>
       <View style={[styles.content, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1 }]}>
         <Text style={[styles.greeting, { color: Colors.textLight }]}>Hello, I'm</Text>
-        <Text style={[styles.name, { color: Colors.primary }]}>Gagan Gowda   K   R</Text>
+        <Text style={[styles.name, { color: Colors.primary }]}>Gagan Gowda K R</Text>
         <Text style={[styles.title, { color: Colors.textLight }]}>Associate Software Engineer</Text>
         <Text style={[styles.description, { color: Colors.textLight }]}>
           I build robust cross-platform applications and software based on strict industry standards. 
@@ -104,16 +107,32 @@ export default function Hero() {
           something great.
         </Text>
 
-        <View style={styles.buttonContainer}>
-          <Hoverable style={[styles.primaryButton, { borderColor: Colors.border, backgroundColor: Colors.backgroundLight }]} onPress={handleOpenModal}>
-            <Text style={styles.primaryButtonText}>Download Resume</Text>
+        {/* Buttons Container */}
+        <View style={[styles.buttonContainer, { flexDirection: isMobile ? 'column' : 'row' }]}>
+          <Hoverable
+            style={[
+              styles.primaryButton,
+              { borderColor: Colors.border, backgroundColor: Colors.backgroundLight },
+              isMobile && { width: '100%' }
+            ]}
+            onPress={handleOpenModal}
+          >
+            <Text style={styles.primaryButtonText} numberOfLines={1}>
+              Download Resume
+            </Text>
           </Hoverable>
 
           <Hoverable
-            style={[styles.secondaryButton, { borderColor: Colors.border, backgroundColor: Colors.backgroundLight }]}
+            style={[
+              styles.secondaryButton,
+              { borderColor: Colors.border, backgroundColor: Colors.backgroundLight },
+              isMobile && { width: '100%' }
+            ]}
             onPress={() => setAboutModalVisible(true)}
           >
-            <Text style={styles.secondaryButtonText}>Know more</Text>
+            <Text style={styles.secondaryButtonText} numberOfLines={1}>
+              Know more
+            </Text>
           </Hoverable>
         </View>
       </View>
@@ -214,26 +233,31 @@ export default function Hero() {
         </Pressable>
       </Modal>
 
-      {/* Modal 2: New Know More Detailed Dynamic Layout Modal */}
+      {/* Modal 2: Dynamic Scrollable Know More Modal */}
       <Modal
         animationType="fade"
         transparent={true}
         visible={aboutModalVisible}
         onRequestClose={() => setAboutModalVisible(false)}
       >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setAboutModalVisible(false)}
-        >
-          <Pressable style={[styles.aboutModalCard, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}>
-            {/* <Text style={[styles.modalTitle, { color: Colors.primaryDark, marginBottom: Spacing.sm }]}>Basic Details</Text> */}
+        <View style={styles.modalOverlay}>
+          <Pressable
+            style={styles.backdropPressable}
+            onPress={() => setAboutModalVisible(false)}
+          />
+          <View style={[styles.aboutModalCard, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}>
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.aboutScrollContent}>
-              <View style={styles.splitLayoutContainer}>
+            <ScrollView
+              showsVerticalScrollIndicator={true}
+              contentContainerStyle={styles.aboutScrollContent}
+              nestedScrollEnabled={true}
+            >
+              <View style={[styles.splitLayoutContainer, { flexDirection: isMobile ? 'column' : 'row' }]}>
 
-                {/* Left Column: Education Details */}
-                <View style={styles.layoutColumn}>
+                {/* Column 1: Education Details */}
+                <View style={[styles.layoutColumn, { minWidth: isMobile ? '100%' : 300 }]}>
                   <Text style={[styles.columnHeading, { color: Colors.primary }]}>Education</Text>
+
                   <View style={[styles.infoCard, { borderColor: Colors.border }]}>
                     <Text style={[styles.infoCardTitle, { color: Colors.primaryDark }]}>Cambridge Institute of Technology NC</Text>
                     <Text style={[styles.infoCardDuration, { color: Colors.primary }]}>2021 - 2025</Text>
@@ -241,6 +265,7 @@ export default function Hero() {
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>Computer Science & Engineering</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>CGPA : 8.24</Text>
                   </View>
+
                   <View style={[styles.infoCard, { borderColor: Colors.border }]}>
                     <Text style={[styles.infoCardTitle, { color: Colors.primaryDark }]}>Vidyanidhi Independent PU College</Text>
                     <Text style={[styles.infoCardDuration, { color: Colors.primary }]}>2019 - 2021</Text>
@@ -248,6 +273,7 @@ export default function Hero() {
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>PCMC</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>Percentage : 92.16 %</Text>
                   </View>
+
                   <View style={[styles.infoCard, { borderColor: Colors.border }]}>
                     <Text style={[styles.infoCardTitle, { color: Colors.primaryDark }]}>Morarji Desai Residential School</Text>
                     <Text style={[styles.infoCardDuration, { color: Colors.primary }]}>2018 - 2019</Text>
@@ -257,8 +283,8 @@ export default function Hero() {
                   </View>
                 </View>
 
-                {/* Right Column: Hobbies & Address details */}
-                <View style={styles.layoutColumn}>
+                {/* Column 2: Hobbies & Address details */}
+                <View style={[styles.layoutColumn, { minWidth: isMobile ? '100%' : 300 }]}>
                   <Text style={[styles.columnHeading, { color: Colors.primary }]}>Hobbies & Interests</Text>
                   <View style={styles.hobbyList}>
                     {['Dance', 'Volley Ball', 'Cricket', 'Chess', 'Agriculture', 'Exploring New Technologies'].map((hobby) => (
@@ -268,7 +294,7 @@ export default function Hero() {
                     ))}
                   </View>
 
-                  {/* Address Section with integrated responsive Cross-Platform Map Block */}
+                  {/* Address Section */}
                   <Text style={[styles.bottomColumnHeading, { color: Colors.primary }]}>Address</Text>
                   <View style={[styles.addressContainer, { borderColor: Colors.border }]}>
                     <View style={styles.addressTextContent}>
@@ -304,6 +330,7 @@ export default function Hero() {
                     </View>
                   </View>
                 </View>
+
               </View>
             </ScrollView>
 
@@ -315,8 +342,9 @@ export default function Hero() {
                 <Text style={styles.modalSubmitText}>Close</Text>
               </TouchableOpacity>
             </View>
-          </Pressable>
-        </Pressable>
+
+          </View>
+        </View>
       </Modal>
     </View>
   );
@@ -368,37 +396,48 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   buttonContainer: {
-    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     gap: Spacing.md,
-    width: Platform.OS === 'web' ? 'auto' : '100%',
-    paddingHorizontal: Spacing.md,
+    width: '100%',
+    maxWidth: 450,
+    paddingHorizontal: Spacing.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   primaryButton: {
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.sm + 2,
+    paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
     borderWidth: 2,
-    minWidth: Platform.OS === 'web' ? 160 : '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: 160,
   },
   primaryButtonText: {
     ...Typography.body,
     color: 'rgba(157, 142, 142, 0.95)',
     fontWeight: '600',
+    textAlign: 'center',
+    ...(Platform.OS === 'web' && {
+      whiteSpace: 'nowrap',
+    }),
   },
   secondaryButton: {
     borderWidth: 2,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.xl,
+    paddingVertical: Spacing.sm + 2,
+    paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
-    minWidth: Platform.OS === 'web' ? 160 : '100%',
     alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 140,
   },
   secondaryButtonText: {
     ...Typography.body,
     color: 'rgba(157, 142, 142, 0.95)',
     fontWeight: '600',
+    textAlign: 'center',
+    ...(Platform.OS === 'web' && {
+      whiteSpace: 'nowrap',
+    }),
   },
   modalOverlay: {
     flex: 1,
@@ -407,12 +446,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: Spacing.md,
   },
+  backdropPressable: {
+    ...StyleSheet.absoluteFillObject,
+  },
   modalCard: {
     width: '100%',
     maxWidth: 480,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
-    padding: Spacing.xl,
+    padding: Spacing.lg,
     ...Platform.select({
       web: { boxShadow: '0px 10px 25px rgba(0,0,0,0.3)' },
       default: { elevation: 8 }
@@ -433,16 +475,15 @@ const styles = StyleSheet.create({
   },
   aboutScrollContent: {
     paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
   },
   splitLayoutContainer: {
-    flexDirection: Platform.OS === 'web' ? 'row' : 'column',
     gap: Spacing.xl,
     width: '100%',
-    marginTop: Spacing.md,
   },
   layoutColumn: {
     flex: 1,
-    minWidth: Platform.OS === 'web' ? 330 : '100%',
+    width: '100%',
   },
   columnHeading: {
     fontSize: 18,
@@ -549,7 +590,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: Spacing.md,
-    marginTop: Spacing.lg,
+    marginTop: Spacing.md,
+    paddingTop: Spacing.xs,
   },
   modalCancelBtn: {
     paddingVertical: Spacing.sm,
