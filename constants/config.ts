@@ -32,6 +32,6 @@ export const CONFIG = {
     DOWNLOAD_RESUME: '/api/gkr/resume/download',
     REQUEST_RESUME: '/api/gkr/resume/request',
     SUBMIT_CONTACT: '/api/gkr/contact/request',
-    GET_VERSION: '/api/gkr/util/detail',
+    GET_VERSION: '/api/gkr/app/details',
   }
 };

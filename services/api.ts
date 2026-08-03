@@ -141,8 +141,8 @@ export const ApiService = {
 
       if (!response.ok) throw new Error('Version endpoint responded with non-200 block');
 
-      const versionText = await response.text();
-      return versionText.trim();
+      const versionText = await response.json();
+      return versionText.version;
     } catch (error) {
       console.error('Failed to resolve system build context parameters:', error);
       return '1.0.0-OFFLINE';

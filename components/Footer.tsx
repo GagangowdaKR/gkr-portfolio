@@ -13,7 +13,7 @@ export default function Footer() {
     let isMounted = true;
 
     const fetchBuildMetadata = async () => {
-      const version = await ApiService.getSystemVersion();
+      const version = await ApiService.getSystemVersion(); 
       if (isMounted) {
         setAppVersion(version);
       }
