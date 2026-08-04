@@ -16,7 +16,7 @@
     ],
     "android": {
       "package": "com.gagank22.gkrportfolio",
-      "versionCode": "2",x
+      "versionCode": "2",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
