@@ -99,10 +99,8 @@ export const ApiService = {
     }
   },
 
-
   /**
-   * Dispatches contact message payloads using dynamic base URL resolutions from config endpoints
-  */
+  TODO : Removing since duplicate found
   async submitContactMessage(payload: MessagePayload): Promise<boolean> {
     // Resolved completely using global object configurations without hardcoded values
     const targetUrl = `${CONFIG.API_BASE_URL}${CONFIG.ENDPOINTS.SUBMIT_CONTACT}`;
@@ -122,7 +120,7 @@ export const ApiService = {
       return false;
     }
   },
-
+*/
 
   // Append this method to your existing ApiService object export tree
   /**
