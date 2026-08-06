@@ -16,6 +16,7 @@ Web : npm run web
    Alternative: Expo Go App (Try to use latest version) 
 
 **Architecture PLan** 
+
 GKR-Portfolio/
 ├── app/
 │   ├── _layout.tsx       
