@@ -21,8 +21,8 @@ export default function About() {
         <Text style={[styles.title, { color: Colors.text }]}>About Me</Text>
         <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
         <Text style={[styles.description, { color: Colors.textLight }]}>
-          I am a Junior Software Engineer based in Bengaluru, passionate about designing and developing robust 
-          backend applications. With a solid foundation in Design Principles, SOLID Principles, Object-Oriented Programming (OOP) and 
+          I am a Software Engineer based in Bengaluru, passionate about designing and developing robust
+          software applications. With a solid foundation in Design Principles, SOLID Principles, Object-Oriented Programming (OOP) and
           Data Structures & Algorithms (DSA), I specialize in building scalable RESTful APIs and working within microservices environments.
         </Text>
         <Text style={[styles.description, { color: Colors.textLight }]}>
@@ -31,21 +31,44 @@ export default function About() {
           or collaborating across cross-functional teams, I am always eager to enhance my technical expertise and deliver high-quality 
           software solutions.
         </Text>
-        <View style={[
-          styles.statsContainer, 
-          { flexDirection: isMobile ? 'column' : 'row' }
-        ]}>
-          <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
-            <Text style={[styles.statNumber, { color: Colors.primary }]}>Java</Text>
-            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Java - 8 / 17 / 21 / 25</Text>
+
+        <View style={styles.statsContainer}>
+          {/* Row 1: Java, Spring Boot, Microservices */}
+          <View style={[
+            styles.statsRow,
+            { flexDirection: isMobile ? 'column' : 'row' }
+          ]}>
+            <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
+              <Text style={[styles.statNumber, { color: Colors.primary }]}>Java</Text>
+              <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Java - 8 / 17 / 21 / 25</Text>
+            </View>
+            <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
+              <Text style={[styles.statNumber, { color: Colors.primary }]}>Spring Boot</Text>
+              <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Spring Boot - 3.0 / 4.0</Text>
+            </View>
+            <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
+              <Text style={[styles.statNumber, { color: Colors.primary }]}>Microservices</Text>
+              <Text style={[styles.statLabel, { color: Colors.textLight }]}>Distributed System Architecture</Text>
+            </View>
           </View>
-          <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
-            <Text style={[styles.statNumber, { color: Colors.primary }]}>Spring Boot</Text>
-            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Spring Boot - 3.0 / 4.0</Text>
-          </View>
-          <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
-            <Text style={[styles.statNumber, { color: Colors.primary }]}>Microservices</Text>
-            <Text style={[styles.statLabel, { color: Colors.textLight }]}>Distributed System Architecture</Text>
+
+          {/* Row 2: Python, Flask, Hexagonal */}
+          <View style={[
+            styles.statsRow,
+            { flexDirection: isMobile ? 'column' : 'row' }
+          ]}>
+            <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
+              <Text style={[styles.statNumber, { color: Colors.primary }]}>Python</Text>
+              <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Python - 3.0+</Text>
+            </View>
+            <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
+              <Text style={[styles.statNumber, { color: Colors.primary }]}>Flask</Text>
+              <Text style={[styles.statLabel, { color: Colors.textLight }]}>Versions :  Flask - 3.0</Text>
+            </View>
+            <View style={[styles.statItem, { flex: isMobile ? undefined : 1 }]}>
+              <Text style={[styles.statNumber, { color: Colors.primary }]}>Hexagonal</Text>
+              <Text style={[styles.statLabel, { color: Colors.textLight }]}>Modular Architecture</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -86,9 +109,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   statsContainer: {
-    justifyContent: 'space-around',
     marginTop: Spacing.xl,
     gap: Spacing.xl,
+    width: '100%',
+  },
+  statsRow: {
+    justifyContent: 'space-around',
+    gap: Spacing.xl,
+    width: '100%',
   },
   statItem: {
     alignItems: 'center',
