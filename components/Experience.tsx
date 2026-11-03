@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ interface ExperienceItem {
   role: string;
   company: string;
   location: string;
-  startDate: string; // Changed to ISO date string format (YYYY-MM)
+  startDate: string; // ISO date string format (YYYY-MM)
   endDate?: string;  // Optional: undefined or empty string represents "Present"
   periodDisplay: string; // The literal string to show for the calendar range text
   description: string[];
@@ -81,12 +81,36 @@ export default function Experience() {
 
   const isSmallScreen = windowWidth < 768;
 
-  // Helper function to calculate the duration dynamically using the Date object matrix
-  const calculateDuration = (startDateStr: string, endDateStr?: string): string => {
-    const start = new Date(startDateStr + '-01'); // Force first day of the month boundary
-    const end = endDateStr ? new Date(endDateStr + '-01') : new Date(); // Reverts to the current active system Date if "Present"
+  // Helper function to get month span between two dates inclusive
+  const getMonthsDifference = (startDateStr: string, endDateStr?: string): number => {
+    const start = new Date(startDateStr + '-01');
+    const end = endDateStr ? new Date(endDateStr + '-01') : new Date();
+    return Math.max(0, (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1);
+  };
 
-    const totalMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+  // Helper function to format duration dynamically
+  const calculateDuration = (startDateStr: string, endDateStr?: string): string => {
+    const totalMonths = getMonthsDifference(startDateStr, endDateStr);
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+
+    const yearLabel = years === 1 ? 'year' : 'years';
+    const monthLabel = months === 1 ? 'month' : 'months';
+
+    if (years > 0 && months > 0) {
+      return `${years} ${yearLabel} & ${months} ${monthLabel}`;
+    }
+    if (years > 0) {
+      return `${years} ${yearLabel}`;
+    }
+    return `${months} ${monthLabel}`;
+  };
+
+  // Calculate sum of total cumulative experience across all items
+  const totalExperienceDisplay = useMemo(() => {
+    const totalMonths = experiences.reduce((acc, exp) => {
+      return acc + getMonthsDifference(exp.startDate, exp.endDate);
+    }, 0);
 
     const years = Math.floor(totalMonths / 12);
     const months = totalMonths % 12;
@@ -94,11 +118,14 @@ export default function Experience() {
     const yearLabel = years === 1 ? 'year' : 'years';
     const monthLabel = months === 1 ? 'month' : 'months';
 
+    if (years > 0 && months > 0) {
+      return `${years} ${yearLabel} & ${months} ${monthLabel}`;
+    }
     if (years > 0) {
-      return `${years} ${yearLabel} ${months} ${monthLabel}`;
+      return `${years} ${yearLabel}`;
     }
     return `${months} ${monthLabel}`;
-  };
+  }, []);
 
   return (
     <View nativeID="experience" style={styles.container}>
@@ -116,7 +143,7 @@ export default function Experience() {
         </Text>
         <View style={[styles.divider, { backgroundColor: Colors.primary }]} />
         <Text style={[styles.subtitle, { color: Colors.textLight }]}>
-          My career journey
+          My career journey <Text style={{ color: Colors.secondary, fontWeight: '700' }}>[ {totalExperienceDisplay} ]</Text>
         </Text>
         
         <View style={styles.timeline}>
