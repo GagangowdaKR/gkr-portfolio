@@ -25,11 +25,28 @@ interface ExperienceItem {
 const experiences: ExperienceItem[] = [
   {
     id: '1',
+    role: 'Full-Stack Engineer',
+    company: 'WeSure Insurtech',
+    location: 'Bangalore, India',
+    startDate: '2026-10', // November 2025
+    periodDisplay: 'September 2026 - Present',
+    description: [
+      'Deliver end-to-end full-stack solutions, building responsive web interfaces and resilient backend microservices.',
+      'Engineered modular backend services using Spring Boot and Flask following Hexagonal Architecture principles.',
+      'Developed responsive, high-performance web frontends and interactive client portals using React.',
+      'Integrated secure RESTful APIs, optimized database queries, and implemented Redis caching for lower latency.',
+      'Collaborated closely across all teams to maintain CI/CD pipelines, containerized deployments, and agile delivery.'
+    ],
+    technologies: ['Java 21', 'Python', 'Spring Boot', 'Flask', 'React', 'Angular', 'Microservices', 'Hexagonal / Modular', 'RabbitMQ', 'MySQL', 'MariaDB', 'Spring Security', 'MongoDB', 'Spring Mail', 'Redis Cache', 'Elastic Search', 'JQuery', 'JUnit', 'JWT', 'OAuth2', 'Gradle', 'Docker', 'CICD', 'Jenkins', 'Portainer', 'Git', 'Github', 'Jira', 'Figma'],
+  },
+  {
+    id: '2',
     role: 'Associate Software Engineer',
     company: 'Sparksupport Infotech Pvt Ltd.',
     location: 'Kochi, India',
-    startDate: '2025-11', // November 2025
-    periodDisplay: '2025 - Present',
+    startDate: '2025-11',
+    endDate: '2026-08',
+    periodDisplay: 'November 2025 - August 2026',
     description: [
       'Contribute to enterprise-level backend development for robust and scalable applications.',
       'Developed enterprise backend services using Java, Spring Boot, and Microservices architecture.',
@@ -40,7 +57,7 @@ const experiences: ExperienceItem[] = [
     technologies: ['Java 8/17/21', 'Spring Boot', 'Microservices', 'RabbitMQ', 'MySQL', 'MariaDB', 'Spring Security', 'MongoDB', 'PostgreSQL', 'Spring Mail', 'Redis Cache', 'Elastic Search', 'JQuery', 'JUnit', 'JWT', 'OAuth2', 'Gradle', 'Maven', 'SFTP', 'Docker', 'CICD', 'Jenkins', 'Portainer', 'Git', 'Bitbucket', 'Jira'],
   },
   {
-    id: '2',
+    id: '3',
     role: 'Junior Java Developer',
     company: 'Sparksupport Infotech Pvt Ltd.',
     location: 'Kochi, India',

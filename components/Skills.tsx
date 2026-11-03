@@ -21,7 +21,9 @@ import { useTheme } from '@/contexts/ThemeContext';
 
 const skillIcons = [
   { name: 'Java', icon: require('../assets/skill-icons/Java.png') },
+  { name: 'Python', icon: require('../assets/skill-icons/Python.png') },
   { name: 'Spring Boot', icon: require('../assets/skill-icons/Spring Boot.png') },
+  { name: 'Flask', icon: require('../assets/skill-icons/Flask.png') },
   { name: 'Microservices', icon: require('../assets/skill-icons/Microservices.png') },
   { name: 'RabbitMQ', icon: require('../assets/skill-icons/RabbitMQ.png') },
   { name: 'Spring Security', icon: require('../assets/skill-icons/Spring Security.png') },
@@ -49,7 +51,7 @@ const skillIcons = [
   { name: 'Github', icon: require('../assets/skill-icons/Github.png') },
   { name: 'Bitbucket', icon: require('../assets/skill-icons/Bitbucket.png') },
   { name: 'Jira', icon: require('../assets/skill-icons/Jira.png') },
-  { name: 'React Native', icon: require('../assets/skill-icons/React Native.png') },
+  { name: 'React / React Native', icon: require('../assets/skill-icons/React Native.png') },
   { name: 'Cross Platform', icon: require('../assets/skill-icons/Cross-Platform.png') },
   { name: 'HTML', icon: require('../assets/skill-icons/HTML.png') },
   { name: 'CSS', icon: require('../assets/skill-icons/CSS.png') },

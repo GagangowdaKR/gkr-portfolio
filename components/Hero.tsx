@@ -98,10 +98,10 @@ export default function Hero() {
       <View style={[styles.content, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border, borderWidth: 1 }]}>
         <Text style={[styles.greeting, { color: Colors.textLight }]}>Hello, I'm</Text>
         <Text style={[styles.name, { color: Colors.primary }]}>Gagan Gowda K R</Text>
-        <Text style={[styles.title, { color: Colors.textLight }]}>Associate Software Engineer</Text>
+        <Text style={[styles.title, { color: Colors.textLight }]}>Full Stack Engineer</Text>
         <Text style={[styles.description, { color: Colors.textLight }]}>
           I build robust cross-platform applications and software based on strict industry standards. 
-          Using strong backend tools like Java and Spring Boot, I follow microservices architecture to 
+          Using strong backend tools like Java / python and Spring Boot / Flask, I follow microservices and hexagonal architecture to
           ensure high performance and top-tier security. Welcome to my space! I'm always open to collaborating 
           on impactful projects and contributing to open-source initiatives—glad you're here, let's connect and build 
           something great.
