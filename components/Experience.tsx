@@ -41,7 +41,7 @@ const experiences: ExperienceItem[] = [
   },
   {
     id: '2',
-    role: 'Java Developer Trainee',
+    role: 'Junior Java Developer',
     company: 'Sparksupport Infotech Pvt Ltd.',
     location: 'Kochi, India',
     startDate: '2025-07',
