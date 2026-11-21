@@ -8,6 +8,7 @@ import {
   Image,
   Modal,
   TextInput,
+  TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
 import { Spacing, BorderRadius } from '@/constants/Theme';
@@ -50,7 +51,7 @@ const extraProjects: ExtraProject[] = [
   { id: '7', title: 'Campus News and Announcement', category: Category.I, github: 'https://github.com/GagangowdaKR/Campus_News_and_Announcement' },
   { id: '8', title: 'Library Management System', category: Category.G, github: 'https://github.com/GagangowdaKR/Library_Management_System_SQL_Project' },
   { id: '9', title: 'RabbitMQ Message Broker Spring Boot', category: Category.E, github: 'https://github.com/GagangowdaKR/SpringBoot-RabbitMQ-Demo' },
-  { id: '10', title: 'Spring Security JWT Auth ', category: Category.D, github: 'https://github.com/GagangowdaKR/Spring_Security_JWT' },
+  { id: '10', title: 'Spring Security JWT Auth', category: Category.D, github: 'https://github.com/GagangowdaKR/Spring_Security_JWT' },
   { id: '11', title: 'Spring Security OAuth2', category: Category.D, github: 'https://github.com/GagangowdaKR/Spring_Security_OAuth2' },
   { id: '12', title: 'Basic Authentication Database Storage', category: Category.D, github: 'https://github.com/GagangowdaKR/Spring_Security_BA_DB' },
   { id: '13', title: 'Basic Authentication In-Memory Storage', category: Category.D, github: 'https://github.com/GagangowdaKR/Spring_Security_BA_IM' },
@@ -60,7 +61,7 @@ const extraProjects: ExtraProject[] = [
   { id: '17', title: 'FE Online Meeting Monitor', category: Category.J, github: 'https://github.com/GagangowdaKR/attentiq-final' },
   { id: '18', title: 'BE Online Meeting Monitor', category: Category.C, github: 'https://github.com/GagangowdaKR/attentiq-backend' },
   { id: '19', title: 'AIML Online Meeting Monitor', category: Category.H, github: 'https://github.com/GagangowdaKR/attentiq-ai' },
-  { id: '20', title: 'MasterClock Suit', category: Category.I, github: 'https://github.com/GagangowdaKR/MasterClock_Suite' },
+  { id: '20', title: 'MasterClock Suite', category: Category.I, github: 'https://github.com/GagangowdaKR/MasterClock_Suite' },
   { id: '21', title: 'Initial Web Portfolio', category: Category.I, github: 'https://github.com/GagangowdaKR/Portfolio' },
 ];
 
@@ -80,9 +81,11 @@ export default function ProjectListUtil({
 
   const filteredProjects = extraProjects.filter((project) => {
     const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
     const titleMatch = project.title.toLowerCase().includes(query);
-    const categoryMatch = project.category.toLowerCase().includes(query);
-    return titleMatch || categoryMatch;
+    const rawCategoryMatch = project.category.toLowerCase().includes(query);
+    const formattedCategoryMatch = formatCategoryLabel(project.category).toLowerCase().includes(query);
+    return titleMatch || rawCategoryMatch || formattedCategoryMatch;
   });
 
   return (
@@ -90,85 +93,126 @@ export default function ProjectListUtil({
       visible={isVisible}
       transparent={true}
       animationType="fade"
+      hardwareAccelerated={true}
       onRequestClose={() => {
         setSearchQuery('');
         onClose();
       }}
     >
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}>
-          
-          <View style={[
-            styles.modalHeaderFixedRow, 
+      <View style={[styles.modalOverlay, { padding: isMobile ? Spacing.sm : Spacing.lg }]}>
+        <View
+          style={[
+            styles.modalContent,
             { 
-              flexDirection: isMobile ? 'column' : 'row',
-              alignItems: isMobile ? 'flex-start' : 'center',
+              backgroundColor: Colors.backgroundLight,
+              borderColor: Colors.border,
+              height: isMobile ? '88%' : '80%',
             }
-          ]}>
-            <Text style={[styles.modalTitle, { color: Colors.primary }]}>Projects Vault</Text>
-            
-            <View style={[
-              styles.searchBoxWrapper, 
+          ]}
+        >
+
+          {/* Header Section */}
+          <View
+            style={[
+              styles.modalHeaderFixedRow,
               { 
-                borderColor: Colors.border, 
-                backgroundColor: Colors.background + '40',
-                width: isMobile ? '100%' : 240,
+                flexDirection: isMobile ? 'column' : 'row',
+                alignItems: isMobile ? 'stretch' : 'center',
+                paddingHorizontal: isMobile ? Spacing.md : Spacing.xl,
               }
-            ]}>
+            ]}
+          >
+            <View style={styles.titleContainer}>
+              <Text style={[styles.modalTitle, { color: Colors.primary }]}>Projects Vault</Text>
+              <Text style={[styles.modalSubtitleCount, { color: Colors.textLight }]}>
+                {filteredProjects.length} of {extraProjects.length} Repositories
+              </Text>
+            </View>
+
+            <View
+              style={[
+                styles.searchBoxWrapper,
+                {
+                  borderColor: Colors.border,
+                  backgroundColor: Colors.background + '60',
+                  width: isMobile ? '100%' : 260,
+                }
+              ]}
+            >
               <Image 
                 source={require('../assets/Search.png')}
                 style={[styles.searchIconImage, { tintColor: Colors.primary }]} 
               />
               <TextInput
                 style={[styles.searchBarInput, { color: Colors.text }]}
-                placeholder="Search projects or categories..."
+                placeholder="Search titles or categories..."
                 placeholderTextColor={Colors.textLight + '90'}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
                 autoCorrect={false}
+                clearButtonMode="while-editing"
               />
+              {searchQuery.length > 0 && Platform.OS !== 'ios' && (
+                <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchBtn}>
+                  <Text style={[styles.clearSearchText, { color: Colors.textLight }]}>✕</Text>
+                </TouchableOpacity>
+              )}
             </View>
           </View>
 
-          <ScrollView 
-            showsVerticalScrollIndicator={false} 
+          {/* Scrollable Projects Region */}
+          <ScrollView
+            showsVerticalScrollIndicator={true}
             showsHorizontalScrollIndicator={false}
             style={styles.modalScrollRegion}
-            dataSet={Platform.OS === 'web' ? { className: 'hide-scrollbar' } : undefined}
-            contentContainerStyle={styles.modalBodyPaddingFix}
+            contentContainerStyle={[
+              styles.modalBodyPaddingFix,
+              { paddingHorizontal: isMobile ? Spacing.md : Spacing.xl }
+            ]}
           >
             {filteredProjects.length > 0 ? (
               filteredProjects.map((project) => (
                 <View 
                   key={project.id} 
-                  style={[styles.projectListItem, { borderColor: Colors.border, backgroundColor: Colors.background + '30' }]}
+                  style={[
+                    styles.projectListItem,
+                    {
+                      borderColor: Colors.border,
+                      backgroundColor: Colors.background + '40',
+                      flexDirection: isMobile ? 'column' : 'row',
+                      alignItems: isMobile ? 'flex-start' : 'center',
+                    }
+                  ]}
                 >
                   <View style={styles.projectInfoColumn}>
-                    <Text style={[styles.projectListItemTitle, { color: Colors.text }]} numberOfLines={1}>
+                    <Text style={[styles.projectListItemTitle, { color: Colors.text }]}>
                       {project.title}
                     </Text>
-                    <View style={[styles.categoryTagContainer, { borderColor: Colors.border, borderWidth: 1 }]}>
+                    <View style={[styles.categoryTagContainer, { borderColor: Colors.border, backgroundColor: Colors.primary + '12' }]}>
                       <Text style={[styles.categoryTagText, { color: Colors.primary }]}>
                         {formatCategoryLabel(project.category)}
                       </Text>
                     </View>
                   </View>
 
-                  <View style={styles.modalLinkWithLabelStack}>
+                  <View
+                    style={[
+                      styles.modalLinkWithLabelStack,
+                      isMobile && { marginTop: Spacing.xs, alignSelf: 'flex-end' }
+                    ]}
+                  >
                     {project.github ? (
-                      <>
-                        <Hoverable
-                          style={[styles.ctaLargeModal, { backgroundColor: Colors.primary + '20', borderColor: Colors.border, borderWidth: 1 }]}
-                          hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 14px ${Colors.primary}40` } }) }}
-                          onPress={() => onLinkPress(project.github)}
-                        >
-                          <Image source={require('../assets/GithubLink.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.primary }]} />
-                        </Hoverable>
-                        <Text style={[styles.modalActionTextLabel, { color: Colors.primary }]}>Code</Text>
-                      </>
+                      <Hoverable
+                        style={[styles.ctaLargeModal, { backgroundColor: Colors.primary + '20', borderColor: Colors.border }]}
+                        hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary }}
+                        onPress={() => onLinkPress(project.github)}
+                      >
+                        <Image source={require('../assets/GithubLink.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.primary }]} />
+                        <Text style={[styles.modalActionTextLabel, { color: Colors.primary }]}>Code ↗</Text>
+                      </Hoverable>
                     ) : (
-                      <View style={[styles.privateBadgeContainer, { backgroundColor: Colors.secondary + '30', borderColor: Colors.border, borderWidth: 1 }]}>
-                        <Image source={require('../assets/BitbucketPrivate.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.textLight, opacity: 0.5 }]} />
+                      <View style={[styles.privateBadgeContainer, { backgroundColor: Colors.secondary + '20', borderColor: Colors.border }]}>
+                        <Image source={require('../assets/BitbucketPrivate.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.textLight, opacity: 0.6 }]} />
                         <Text style={[styles.privateBadgeText, { color: Colors.primary }]}>Private</Text>
                       </View>
                     )}
@@ -177,21 +221,25 @@ export default function ProjectListUtil({
               ))
             ) : (
               <View style={styles.emptyStateContainer}>
-                <Text style={[styles.emptyStateText, { color: Colors.textLight }]}>No matching projects found.</Text>
+                <Text style={[styles.emptyStateTitle, { color: Colors.text }]}>No Projects Found</Text>
+                <Text style={[styles.emptyStateText, { color: Colors.textLight }]}>
+                  No repositories match "{searchQuery}". Try searching for another keyword like "Spring", "Security", or "Microservices".
+                </Text>
               </View>
             )}
           </ScrollView>
 
+          {/* Footer Controls */}
           <View style={[styles.modalFooterControlsRow, { borderColor: Colors.border }]}>
             <Hoverable 
-              style={[styles.centeredCloseBtnHoverable, { backgroundColor: Colors.primary + '20', borderColor: Colors.border, borderWidth: 1 }]}
-              hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 12px ${Colors.primary}30` } }) }}
+              style={[styles.centeredCloseBtnHoverable, { backgroundColor: Colors.primary + '20', borderColor: Colors.border }]}
+              hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary }}
               onPress={() => {
                 setSearchQuery('');
                 onClose();
               }}
             >
-              <Text style={[styles.closeBtnText, { color: Colors.primary }]}>Close</Text>
+              <Text style={[styles.closeBtnText, { color: Colors.primary }]}>Close Vault</Text>
             </Hoverable>
           </View>
         </View>
@@ -203,36 +251,46 @@ export default function ProjectListUtil({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: 'rgba(0, 0, 0, 0.78)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: Spacing.lg,
   },
   modalContent: {
     width: '100%',
-    maxWidth: 680,
-    maxHeight: '75%',
-    borderRadius: BorderRadius.xl,
+    maxWidth: 720,
+    maxHeight: '90%',
+    borderRadius: BorderRadius.lg,
     borderWidth: 1,
-    paddingTop: Spacing.xl, 
+    paddingTop: Spacing.lg,
+    flexDirection: 'column',
+    overflow: 'hidden',
     ...Platform.select({
       web: {
-        boxShadow: '0px 12px 36px rgba(0,0,0,0.35)',
+        boxShadow: '0px 12px 36px rgba(0,0,0,0.4)',
+      },
+      default: {
+        elevation: 10,
       }
     }),
-    flexDirection: 'column',
   },
   modalHeaderFixedRow: {
     justifyContent: 'space-between',
-    marginBottom: Spacing.lg,
+    marginBottom: Spacing.md,
     width: '100%',
-    paddingHorizontal: Spacing.xl,
-    gap: Spacing.md,
+    gap: Spacing.sm,
+  },
+  titleContainer: {
+    flexDirection: 'column',
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '800',
-    lineHeight: 32,
+    lineHeight: 28,
+  },
+  modalSubtitleCount: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2,
   },
   searchBoxWrapper: {
     flexDirection: 'row',
@@ -240,114 +298,127 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: BorderRadius.full,
     paddingHorizontal: Spacing.sm,
-    height: 38,
+    height: 40,
   },
   searchIconImage: {
-    width: 25,
-    height: 25,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
-    marginRight: 6,
-    opacity: 0.6,
+    marginRight: 8,
+    opacity: 0.7,
   },
   searchBarInput: {
     flex: 1,
     fontSize: 13,
     fontWeight: '500',
     paddingVertical: 0,
+    height: '100%',
     ...Platform.select({
       web: {
         outlineStyle: 'none',
       }
     })
   },
+  clearSearchBtn: {
+    padding: 4,
+  },
+  clearSearchText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
   modalScrollRegion: {
     flex: 1,
     width: '100%',
-    marginBottom: Spacing.lg,
   },
   modalBodyPaddingFix: {
-    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.lg,
     gap: Spacing.sm,
   },
   projectListItem: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     borderWidth: 1,
     borderRadius: BorderRadius.md,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
+    gap: Spacing.xs,
   },
   projectInfoColumn: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: 6,
-    paddingRight: Spacing.md,
   },
   projectListItemTitle: {
     fontSize: 15,
     fontWeight: '700',
+    lineHeight: 20,
   },
   categoryTagContainer: {
     paddingHorizontal: Spacing.sm,
-    paddingVertical: 3,
+    paddingVertical: 4,
     borderRadius: BorderRadius.sm,
+    borderWidth: 1,
   },
   categoryTagText: {
-    fontSize: 11.5,
+    fontSize: 11,
     fontWeight: '600',
     letterSpacing: 0.3,
   },
   modalLinkWithLabelStack: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+  },
+  ctaLargeModal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    gap: 6,
+  },
+  linkIconLargeModal: {
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
   },
   modalActionTextLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
-    opacity: 0.9,
-    textAlign: 'center',
   },
   privateBadgeContainer: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.sm,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    minWidth: 60,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    gap: 6,
   },
   privateBadgeText: {
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.3,
-    opacity: 0.5,
-  },
-  ctaLargeModal: {
-    width: 36, 
-    height: 36,
-    borderRadius: BorderRadius.full,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...Platform.select({ web: { transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out' } }),
-  },
-  linkIconLargeModal: {
-    width: 18,
-    height: 20,
-    resizeMode: 'contain',
   },
   ctaHover: {
-    ...Platform.select({ web: { transform: [{ scale: 1.12 }] }, android: { elevation: 6 } }),
+    ...Platform.select({ web: { transform: [{ scale: 1.05 }] }, default: { elevation: 4 } }),
   },
   emptyStateContainer: {
-    paddingVertical: Spacing.xl,
+    paddingVertical: Spacing.xxl,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: Spacing.md,
+  },
+  emptyStateTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: Spacing.xs,
   },
   emptyStateText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 13,
+    textAlign: 'center',
+    lineHeight: 20,
   },
   modalFooterControlsRow: {
     flexDirection: 'row',
@@ -355,16 +426,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     width: '100%',
-    height: 72,
+    paddingVertical: Spacing.md,
     marginTop: 'auto',
   },
   centeredCloseBtnHoverable: {
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.full,
+    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Platform.select({ web: { transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out' } }),
   },
   closeBtnText: {
     fontSize: 14,
