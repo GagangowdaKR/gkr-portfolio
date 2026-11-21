@@ -29,13 +29,20 @@ const navItems: NavItem[] = [
   { id: '6', label: 'Contact', section: 'contact' },
 ];
 
-export default function Navigation() {
+interface NavigationProps {
+  activeSection?: string;
+  onNavigate?: (section: string) => void;
+}
+
+export default function Navigation({ activeSection: externalActiveSection, onNavigate }: NavigationProps) {
   const insets = useSafeAreaInsets();
   const { width: windowWidth } = useWindowDimensions();
   const { toggleTheme, isDark } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
+  const [internalActiveSection, setInternalActiveSection] = useState('hero');
   const Colors = isDark ? darkColors : lightColors;
+
+  const activeSection = externalActiveSection || internalActiveSection;
 
   const NAVBAR_HEIGHT = 70;
   const isMobileLayout = windowWidth < 768;
@@ -67,13 +74,12 @@ export default function Navigation() {
     if (Platform.OS !== 'web' || typeof document === 'undefined') return;
 
     const handleScrollFallback = () => {
-      // If we are click-scrolling, completely ignore scroll position evaluation tracking to eliminate icon blinking
       if (isClickScrolling.current) return;
 
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
       if (window.scrollY + clientHeight >= scrollHeight - 30) {
-        setActiveSection('contact');
+        setInternalActiveSection('contact');
       }
     };
     window.addEventListener('scroll', handleScrollFallback);
@@ -85,12 +91,11 @@ export default function Navigation() {
     };
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      // Block runtime section updates if automated scroll redirection execution is running
       if (isClickScrolling.current) return;
 
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+          setInternalActiveSection(entry.target.id);
         }
       });
     };
@@ -109,27 +114,25 @@ export default function Navigation() {
   }, [isDark]);
 
   const scrollToSection = (section: string) => {
-    // 1. Instantly snap active design state directly to clicked item parameters
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     isClickScrolling.current = true;
-    setActiveSection(section);
+    setInternalActiveSection(section);
 
-    if (Platform.OS === 'web') {
+    if (onNavigate) {
+      onNavigate(section);
+    } else if (Platform.OS === 'web') {
       const element = document.getElementById(section);
       if (element) {
         element.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
         });
-
-        // 2. Clear click lock once smooth animation completes 
-        scrollTimeoutRef.current = setTimeout(() => {
-          isClickScrolling.current = false;
-        }, 850); // Matches smooth scroll translation animation length benchmarks exactly
       }
-    } else {
-      isClickScrolling.current = false;
     }
+
+    scrollTimeoutRef.current = setTimeout(() => {
+      isClickScrolling.current = false;
+    }, 850);
 
     setIsMenuOpen(false);
   };
@@ -163,8 +166,7 @@ export default function Navigation() {
       ]}
     >
       <View style={styles.navBar}>
-        {/* Replacing Text Logo with static PNG image asset reference */}
-        <TouchableOpacity 
+        <TouchableOpacity
           activeOpacity={0.8} 
           onPress={() => scrollToSection('hero')}
         >
@@ -174,13 +176,7 @@ export default function Navigation() {
             resizeMode="contain"
           />
         </TouchableOpacity>
-        {/* style={[
-          styles.content,
-          {
-            backgroundColor: Colors.backgroundLight,
-            borderColor: Colors.border,
-          },
-        ]} */}
+
         {!isMobileLayout ? (
           <View style={styles.navItemsContainer}>
             <View style={styles.navItems}>
