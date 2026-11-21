@@ -7,8 +7,6 @@ import {
   ScrollView,
   Image,
   Modal,
-  TouchableOpacity,
-  useWindowDimensions,
 } from 'react-native';
 import { Spacing, BorderRadius } from '@/constants/Theme';
 import Hoverable from './Hoverable';
@@ -43,9 +41,6 @@ export default function ProjectUtil({
   onLinkPress,
   Colors,
 }: ProjectUtilProps) {
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
-
   const activeProjectModalData = activeProjectIndex !== null ? projects[activeProjectIndex] : null;
 
   return (
@@ -53,65 +48,50 @@ export default function ProjectUtil({
       visible={isVisible && activeProjectModalData !== null}
       transparent={true}
       animationType="fade"
-      hardwareAccelerated={true}
       onRequestClose={onClose}
     >
-      <View style={[styles.modalOverlay, { padding: isMobile ? Spacing.sm : Spacing.lg }]}>
-        <View
-          style={[
-            styles.modalContent,
-            {
-              backgroundColor: Colors.backgroundLight,
-              borderColor: Colors.border,
-              height: isMobile ? '88%' : '80%',
-            }
-          ]}
-        >
+      <View style={styles.modalOverlay}>
+        <View style={[styles.modalContent, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}>
           
-          {/* Header Row */}
-          <View
-            style={[
-              styles.modalHeaderFixedRow,
-              { paddingHorizontal: isMobile ? Spacing.md : Spacing.xl }
-            ]}
-          >
+          <View style={styles.modalHeaderFixedRow}>
             <View style={styles.modalTitleColumn}>
-              <Text style={[styles.modalTitle, { color: Colors.primary, fontSize: isMobile ? 20 : 24 }]}>
-                {activeProjectModalData?.title}
-              </Text>
+              <Text style={[styles.modalTitle, { color: Colors.primary }]}>{activeProjectModalData?.title}</Text>
               <Text style={[styles.modalSubtitleTag, { color: Colors.textLight }]}>
                 {activeProjectModalData?.tag}
               </Text>
             </View>
 
             <View style={styles.modalHeaderActionsRight}>
+              {/* Conditional rendering checking for empty or non-existent repository properties */}
               {activeProjectModalData?.github ? (
-                <Hoverable
-                  style={[styles.ctaLargeModal, { backgroundColor: Colors.primary + '20', borderColor: Colors.border }]}
-                  hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary }}
-                  onPress={() => onLinkPress(activeProjectModalData.github)}
-                >
-                  <Image source={require('../assets/GithubLink.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.primary }]} />
-                  <Text style={[styles.modalActionTextLabel, { color: Colors.primary }]}>Code ↗</Text>
-                </Hoverable>
+                <View style={styles.modalLinkWithLabelStack}>
+                  <Hoverable
+                    style={[styles.ctaLargeModal, { backgroundColor: Colors.primary + '20', borderColor: Colors.border, borderWidth: 1 }]}
+                    hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 14px ${Colors.primary}40` } }) }}
+                    onPress={() => onLinkPress(activeProjectModalData.github)}
+                  >
+                    <Image source={require('../assets/GithubLink.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.primary }]} />
+                  </Hoverable>
+                  <Text style={[styles.modalActionTextLabel, { color: Colors.primary }]}>Code</Text>
+                </View>
               ) : (
-                <View style={[styles.privateBadgeContainer, { backgroundColor: Colors.secondary + '20', borderColor: Colors.border }]}>
-                  <Image source={require('../assets/BitbucketPrivate.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.textLight, opacity: 0.6 }]} />
-                  <Text style={[styles.privateBadgeText, { color: Colors.primary }]}>Private</Text>
+                /* Unclickable secure fallback component view structure stack for hidden source assets */
+                <View style={styles.modalLinkWithLabelStack}>
+                  <View style={[styles.ctaLargeModalDisabled, { backgroundColor: Colors.border + '30', borderColor: Colors.border, borderWidth: 1 }]}>
+                    <Image source={require('../assets/BitbucketPrivate.png')} style={[styles.linkIconLargeModal, { tintColor: Colors.textLight, opacity: 0.5 }]} />
+                  </View>
+                  <Text style={[styles.modalActionTextLabel, { color: Colors.primary }]}>Bitbucket Private Repo</Text>
                 </View>
               )}
             </View>
           </View>
 
-          {/* Scrollable Content Region */}
-          <ScrollView
-            showsVerticalScrollIndicator={true}
+          <ScrollView 
+            showsVerticalScrollIndicator={false} 
             showsHorizontalScrollIndicator={false}
             style={styles.modalScrollRegion}
-            contentContainerStyle={[
-              styles.modalBodyPaddingFix,
-              { paddingHorizontal: isMobile ? Spacing.md : Spacing.xl }
-            ]}
+            dataSet={Platform.OS === 'web' ? { className: 'hide-scrollbar' } : undefined}
+            contentContainerStyle={styles.modalBodyPaddingFix}
           >
             <Text style={[styles.modalSectionSubheader, { color: Colors.text }]}>Description</Text>
             <Text style={[styles.modalFullDescription, { color: Colors.textLight }]}>
@@ -121,46 +101,44 @@ export default function ProjectUtil({
             <Text style={[styles.modalSectionSubheader, { color: Colors.text }]}>Technologies Used</Text>
             <View style={styles.modalFullTechGrid}>
               {activeProjectModalData?.technologies.map((tech, i) => (
-                <View key={i} style={[styles.modalTechTagLarge, { backgroundColor: Colors.primary + '18', borderColor: Colors.border, borderWidth: 1 }]}>
+                <View key={i} style={[styles.modalTechTagLarge, { backgroundColor: Colors.primary + '15' }]}>
                   <Text style={[styles.modalTechTextLarge, { color: Colors.primary }]}>{tech}</Text>
                 </View>
               ))}
             </View>
           </ScrollView>
 
-          {/* Bottom Controls Bar */}
+          {/* Bottom Nav Controls Footer */}
           <View style={[styles.modalFooterControlsRow, { borderColor: Colors.border }]}>
-            <TouchableOpacity
-              style={[
-                styles.modalNavButton,
-                { borderColor: Colors.border, backgroundColor: Colors.background + '40' },
-                activeProjectIndex === 0 && { opacity: 0.4 }
-              ]}
+            <Hoverable 
+              style={[styles.modalNavButtonHoverable, { borderColor: Colors.border, borderWidth: 1 }]}
+              hoverStyle={activeProjectIndex !== 0 ? { ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 12px ${Colors.primary}30` } }) } : undefined}
               disabled={activeProjectIndex === 0}
               onPress={() => onNavigate((activeProjectIndex ?? 0) - 1)}
             >
-              <Text style={[styles.arrowTextIcon, { color: activeProjectIndex === 0 ? Colors.textLight : Colors.primary }]}>‹ Prev</Text>
-            </TouchableOpacity>
+              <View style={styles.arrowIconWrapper}>
+                <Text style={[styles.arrowTextIcon, { color: activeProjectIndex === 0 ? Colors.border : Colors.primary }]}>{"‹"}</Text>
+              </View>
+            </Hoverable>
             
             <Hoverable 
-              style={[styles.centeredCloseBtnHoverable, { backgroundColor: Colors.primary + '20', borderColor: Colors.border }]}
-              hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary }}
+              style={[styles.centeredCloseBtnHoverable, { backgroundColor: Colors.primary + '20', borderColor: Colors.border, borderWidth: 1 }]}
+              hoverStyle={{ ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 12px ${Colors.primary}30` } }) }}
               onPress={onClose}
             >
               <Text style={[styles.closeBtnText, { color: Colors.primary }]}>Close</Text>
             </Hoverable>
             
-            <TouchableOpacity
-              style={[
-                styles.modalNavButton,
-                { borderColor: Colors.border, backgroundColor: Colors.background + '40' },
-                activeProjectIndex === projects.length - 1 && { opacity: 0.4 }
-              ]}
+            <Hoverable 
+              style={[styles.modalNavButtonHoverable, { borderColor: Colors.border, borderWidth: 1 }]}
+              hoverStyle={activeProjectIndex !== projects.length - 1 ? { ...styles.ctaHover, shadowColor: Colors.primary, ...Platform.select({ web: { boxShadow: `0px 4px 12px ${Colors.primary}30` } }) } : undefined}
               disabled={activeProjectIndex === projects.length - 1}
               onPress={() => onNavigate((activeProjectIndex ?? 0) + 1)}
             >
-              <Text style={[styles.arrowTextIcon, { color: activeProjectIndex === projects.length - 1 ? Colors.textLight : Colors.primary }]}>Next ›</Text>
-            </TouchableOpacity>
+              <View style={styles.arrowIconWrapper}>
+                <Text style={[styles.arrowTextIcon, { color: activeProjectIndex === projects.length - 1 ? Colors.border : Colors.primary }]}>{"›"}</Text>
+              </View>
+            </Hoverable>
           </View>
         </View>
       </View>
@@ -171,46 +149,45 @@ export default function ProjectUtil({
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.78)',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: Spacing.lg,
   },
   modalContent: {
     width: '100%',
-    maxWidth: 720,
-    maxHeight: '90%',
-    borderRadius: BorderRadius.lg,
+    maxWidth: 680,
+    maxHeight: '88%',
+    borderRadius: BorderRadius.xl,
     borderWidth: 1,
-    paddingTop: Spacing.lg,
-    flexDirection: 'column',
-    overflow: 'hidden',
+    paddingTop: Spacing.xl, 
     ...Platform.select({
       web: {
-        boxShadow: '0px 12px 36px rgba(0,0,0,0.4)',
-      },
-      default: {
-        elevation: 10,
+        boxShadow: '0px 12px 36px rgba(0,0,0,0.35)',
       }
     }),
+    flexDirection: 'column',
   },
   modalHeaderFixedRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: Spacing.md,
     width: '100%',
-    gap: Spacing.sm,
+    paddingHorizontal: Spacing.xl,
   },
   modalTitleColumn: {
     flex: 1,
+    paddingRight: Spacing.xl,
   },
   modalTitle: {
+    fontSize: 26,
     fontWeight: '800',
-    lineHeight: 28,
-    marginBottom: 2,
+    lineHeight: 34,
+    marginBottom: 4,
   },
   modalSubtitleTag: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
     opacity: 0.8,
   },
@@ -218,76 +195,74 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  ctaLargeModal: {
-    flexDirection: 'row',
+  modalLinkWithLabelStack: {
     alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 6,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-    gap: 6,
-  },
-  linkIconLargeModal: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
+    justifyContent: 'center',
+    gap: 4,
   },
   modalActionTextLabel: {
     fontSize: 12,
     fontWeight: '700',
+    textAlign: 'center',
+    opacity: 0.4,
   },
-  privateBadgeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 6,
+  ctaLargeModal: {
+    width: 38, 
+    height: 38,
     borderRadius: BorderRadius.full,
-    borderWidth: 1,
-    gap: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({ web: { transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out' } }),
   },
-  privateBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    letterSpacing: 0.3,
+  ctaLargeModalDisabled: {
+    width: 38,
+    height: 38,
+    borderRadius: BorderRadius.full,
+    justifyContent: 'center',
+    alignItems: 'center',
+    opacity: 0.7,
   },
-  ctaHover: {
-    ...Platform.select({ web: { transform: [{ scale: 1.05 }] }, default: { elevation: 4 } }),
+  linkIconLargeModal: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
   modalScrollRegion: {
     flex: 1,
     width: '100%',
+    marginBottom: Spacing.lg,
   },
   modalBodyPaddingFix: {
-    paddingBottom: Spacing.lg,
+    paddingHorizontal: Spacing.xl,
   },
   modalSectionSubheader: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: Spacing.xs,
+    marginBottom: Spacing.sm,
     marginTop: Spacing.md,
-    opacity: 0.9,
+    opacity: 0.85,
   },
   modalFullDescription: {
-    fontSize: 14.5,
-    lineHeight: 24,
+    fontSize: 15,
+    lineHeight: 26,
     textAlign: 'justify',
   },
   modalFullTechGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.xs,
+    gap: Spacing.sm,
     marginTop: Spacing.xs,
-    paddingBottom: Spacing.sm,
+    paddingBottom: Spacing.md,
   },
   modalTechTagLarge: {
-    paddingHorizontal: Spacing.sm + 2,
-    paddingVertical: 5,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
     borderRadius: BorderRadius.sm,
   },
   modalTechTextLarge: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '600',
   },
   modalFooterControlsRow: {
@@ -296,29 +271,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     width: '100%',
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
+    height: 72,
+    paddingHorizontal: Spacing.lg,
     marginTop: 'auto',
   },
-  modalNavButton: {
-    paddingVertical: Spacing.xs + 2,
-    paddingHorizontal: Spacing.md,
+  modalNavButtonHoverable: {
+    width: 44,
+    height: 44,
     borderRadius: BorderRadius.full,
-    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    ...Platform.select({ web: { transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out' } }),
+  },
+  ctaHover: {
+    ...Platform.select({ web: { transform: [{ scale: 1.15 }] }, android: { elevation: 6 } }),
+  },
+  arrowIconWrapper: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: Platform.OS === 'web' ? 6 : 4,
   },
   arrowTextIcon: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 34,
+    fontWeight: '400',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    ...Platform.select({
+      web: {
+        lineHeight: 0, 
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }
+    })
   },
   centeredCloseBtnHoverable: {
     paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.lg,
+    paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.full,
-    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    ...Platform.select({ web: { transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out' } }),
   },
   closeBtnText: {
     fontSize: 14,
