@@ -111,7 +111,3 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'web' ? 40 : 20,
   },
 });
-
-
-
-
