@@ -318,7 +318,7 @@ export default function Hero() {
                   <Text style={[styles.bottomColumnHeading, { color: Colors.primary }]}>Address</Text>
                   <View style={[styles.addressContainer, { borderColor: Colors.border, backgroundColor: Colors.background + '40' }]}>
                     <View style={styles.addressTextContent}>
-                      <Text style={[styles.hobbyText, { color: Colors.text }]}>#04, Kalipalya</Text>
+                      <Text style={[styles.hobbyText, { color: Colors.text, fontWeight: '600' }]}>#04, Kalipalya</Text>
                       <Text style={[styles.hobbyText, { color: Colors.textLight }]}>Doddaballapur, Bengaluru Rural</Text>
                       <Text style={[styles.hobbyText, { color: Colors.textLight }]}>561204, Karnataka, India</Text>
                     </View>
@@ -335,16 +335,16 @@ export default function Hero() {
                           loading="lazy"
                           referrerPolicy="no-referrer-when-downgrade"
                         />
-                      ) : WebView ? (
-                        <WebView
-                          source={{ uri: MAP_EMBED_URL }}
-                          style={{ flex: 1, borderRadius: BorderRadius.sm }}
-                          javaScriptEnabled={true}
-                          domStorageEnabled={true}
-                        />
                       ) : (
-                        <View style={styles.mapFallback}>
-                          <Text style={{ color: Colors.textLight, fontSize: 12 }}>Map rendering unavailable</Text>
+                        <View style={[styles.mapCardView, { backgroundColor: Colors.backgroundLight }]}>
+                          <Text style={[styles.mapPinTitle, { color: Colors.primary }]}>📍 Doddaballapur, Bengaluru Rural</Text>
+                          <Text style={[styles.mapPinCoords, { color: Colors.textLight }]}>13.3319° N, 77.3681° E • Karnataka 561204</Text>
+                          <TouchableOpacity
+                            style={[styles.openMapsBtn, { backgroundColor: Colors.primary + '20', borderColor: Colors.border }]}
+                            onPress={() => Linking.openURL("https://www.google.com/maps/search/?api=1&query=Thambenahalli,Doddaballapur,Bengaluru+Rural,Karnataka+561204")}
+                          >
+                            <Text style={[styles.openMapsBtnText, { color: Colors.primary }]}>Open in Google Maps ↗</Text>
+                          </TouchableOpacity>
                         </View>
                       )}
                     </View>
@@ -557,11 +557,32 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginTop: Spacing.xs,
   },
-  mapFallback: {
+  mapCardView: {
     flex: 1,
-    justifyContent: 'center',
+    padding: Spacing.sm,
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    justifyContent: 'center',
+    textAlign: 'center',
+    gap: 4,
+  },
+  mapPinTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  mapPinCoords: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginBottom: 6,
+  },
+  openMapsBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  openMapsBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   infoCard: {
     borderLeftWidth: 3,
