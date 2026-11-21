@@ -238,57 +238,77 @@ export default function Hero() {
         animationType="fade"
         transparent={true}
         visible={aboutModalVisible}
+        hardwareAccelerated={true}
         onRequestClose={() => setAboutModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, { padding: isMobile ? Spacing.sm : Spacing.md }]}>
           <Pressable
             style={styles.backdropPressable}
             onPress={() => setAboutModalVisible(false)}
           />
-          <View style={[styles.aboutModalCard, { backgroundColor: Colors.backgroundLight, borderColor: Colors.border }]}>
+          <View
+            style={[
+              styles.aboutModalCard,
+              {
+                backgroundColor: Colors.backgroundLight,
+                borderColor: Colors.border,
+                height: isMobile ? '88%' : '82%',
+                padding: isMobile ? Spacing.md : Spacing.xl,
+              }
+            ]}
+          >
+
+            {/* Modal Title Header */}
+            <View style={styles.aboutHeaderRow}>
+              <Text style={[styles.aboutModalTitle, { color: Colors.primary }]}>About & Experience</Text>
+              <TouchableOpacity onPress={() => setAboutModalVisible(false)} style={styles.closeIconBtn}>
+                <Text style={[styles.closeIconText, { color: Colors.textLight }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
 
             <ScrollView
               showsVerticalScrollIndicator={true}
               contentContainerStyle={styles.aboutScrollContent}
               nestedScrollEnabled={true}
+              style={{ flex: 1, width: '100%' }}
             >
               <View style={[styles.splitLayoutContainer, { flexDirection: isMobile ? 'column' : 'row' }]}>
 
                 {/* Column 1: Education Details */}
-                <View style={[styles.layoutColumn, { minWidth: isMobile ? '100%' : 300 }]}>
+                <View style={styles.layoutColumn}>
                   <Text style={[styles.columnHeading, { color: Colors.primary }]}>Education</Text>
 
-                  <View style={[styles.infoCard, { borderColor: Colors.border }]}>
+                  <View style={[styles.infoCard, { borderColor: Colors.border, backgroundColor: Colors.background + '40' }]}>
                     <Text style={[styles.infoCardTitle, { color: Colors.primaryDark }]}>Cambridge Institute of Technology NC</Text>
                     <Text style={[styles.infoCardDuration, { color: Colors.primary }]}>2021 - 2025</Text>
-                    <Text style={[styles.infoCardTitle, { color: Colors.textLight }]}>Bachelor of Engineering (B.E)</Text>
+                    <Text style={[styles.infoCardTitle, { color: Colors.text }]}>Bachelor of Engineering (B.E)</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>Computer Science & Engineering</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>CGPA : 8.24</Text>
                   </View>
 
-                  <View style={[styles.infoCard, { borderColor: Colors.border }]}>
+                  <View style={[styles.infoCard, { borderColor: Colors.border, backgroundColor: Colors.background + '40' }]}>
                     <Text style={[styles.infoCardTitle, { color: Colors.primaryDark }]}>Vidyanidhi Independent PU College</Text>
                     <Text style={[styles.infoCardDuration, { color: Colors.primary }]}>2019 - 2021</Text>
-                    <Text style={[styles.infoCardTitle, { color: Colors.textLight }]}>Pre-University College ( 11th & 12th )</Text>
+                    <Text style={[styles.infoCardTitle, { color: Colors.text }]}>Pre-University College ( 11th & 12th )</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>PCMC</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>Percentage : 92.16 %</Text>
                   </View>
 
-                  <View style={[styles.infoCard, { borderColor: Colors.border }]}>
+                  <View style={[styles.infoCard, { borderColor: Colors.border, backgroundColor: Colors.background + '40' }]}>
                     <Text style={[styles.infoCardTitle, { color: Colors.primaryDark }]}>Morarji Desai Residential School</Text>
                     <Text style={[styles.infoCardDuration, { color: Colors.primary }]}>2018 - 2019</Text>
-                    <Text style={[styles.infoCardTitle, { color: Colors.textLight }]}>Secondary School Leaving Certificate</Text>
+                    <Text style={[styles.infoCardTitle, { color: Colors.text }]}>Secondary School Leaving Certificate</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>NCERT</Text>
                     <Text style={[styles.infoCardSubtitle, { color: Colors.textLight }]}>Percentage : 90.04 %</Text>
                   </View>
                 </View>
 
                 {/* Column 2: Hobbies & Address details */}
-                <View style={[styles.layoutColumn, { minWidth: isMobile ? '100%' : 300 }]}>
+                <View style={styles.layoutColumn}>
                   <Text style={[styles.columnHeading, { color: Colors.primary }]}>Hobbies & Interests</Text>
                   <View style={styles.hobbyList}>
                     {['Dance', 'Volley Ball', 'Cricket', 'Chess', 'Agriculture', 'Exploring New Technologies'].map((hobby) => (
-                      <View key={hobby} style={[styles.hobbyBadge, { backgroundColor: Colors.background, borderColor: Colors.border }]}>
+                      <View key={hobby} style={[styles.hobbyBadge, { backgroundColor: Colors.background + '60', borderColor: Colors.border }]}>
                         <Text style={[styles.hobbyText, { color: Colors.textLight }]}>{hobby}</Text>
                       </View>
                     ))}
@@ -296,9 +316,9 @@ export default function Hero() {
 
                   {/* Address Section */}
                   <Text style={[styles.bottomColumnHeading, { color: Colors.primary }]}>Address</Text>
-                  <View style={[styles.addressContainer, { borderColor: Colors.border }]}>
+                  <View style={[styles.addressContainer, { borderColor: Colors.border, backgroundColor: Colors.background + '40' }]}>
                     <View style={styles.addressTextContent}>
-                      <Text style={[styles.hobbyText, { color: Colors.textLight }]}>#04, Kalipalya</Text>
+                      <Text style={[styles.hobbyText, { color: Colors.text, fontWeight: '600' }]}>#04, Kalipalya</Text>
                       <Text style={[styles.hobbyText, { color: Colors.textLight }]}>Doddaballapur, Bengaluru Rural</Text>
                       <Text style={[styles.hobbyText, { color: Colors.textLight }]}>561204, Karnataka, India</Text>
                     </View>
@@ -315,16 +335,16 @@ export default function Hero() {
                           loading="lazy"
                           referrerPolicy="no-referrer-when-downgrade"
                         />
-                      ) : WebView ? (
-                        <WebView
-                          source={{ uri: MAP_EMBED_URL }}
-                          style={{ flex: 1, borderRadius: BorderRadius.sm }}
-                          javaScriptEnabled={true}
-                          domStorageEnabled={true}
-                        />
                       ) : (
-                        <View style={styles.mapFallback}>
-                          <Text style={{ color: Colors.textLight, fontSize: 12 }}>Map rendering unavailable</Text>
+                        <View style={[styles.mapCardView, { backgroundColor: Colors.backgroundLight }]}>
+                          <Text style={[styles.mapPinTitle, { color: Colors.primary }]}>📍 Doddaballapur, Bengaluru Rural</Text>
+                          <Text style={[styles.mapPinCoords, { color: Colors.textLight }]}>13.3319° N, 77.3681° E • Karnataka 561204</Text>
+                          <TouchableOpacity
+                            style={[styles.openMapsBtn, { backgroundColor: Colors.primary + '20', borderColor: Colors.border }]}
+                            onPress={() => Linking.openURL("https://www.google.com/maps/search/?api=1&query=Thambenahalli,Doddaballapur,Bengaluru+Rural,Karnataka+561204")}
+                          >
+                            <Text style={[styles.openMapsBtnText, { color: Colors.primary }]}>Open in Google Maps ↗</Text>
+                          </TouchableOpacity>
                         </View>
                       )}
                     </View>
@@ -334,7 +354,7 @@ export default function Hero() {
               </View>
             </ScrollView>
 
-            <View style={styles.modalActionRow}>
+            <View style={[styles.modalActionRow, { borderTopWidth: 1, borderColor: Colors.border }]}>
               <TouchableOpacity
                 style={[styles.modalSubmitBtn, { backgroundColor: Colors.primaryDark }]}
                 onPress={() => setAboutModalVisible(false)}
@@ -441,10 +461,9 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.65)',
+    backgroundColor: 'rgba(0,0,0,0.78)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: Spacing.md,
   },
   backdropPressable: {
     ...StyleSheet.absoluteFillObject,
@@ -463,22 +482,41 @@ const styles = StyleSheet.create({
   aboutModalCard: {
     width: '100%',
     maxWidth: 760,
-    maxHeight: '85%',
+    maxHeight: '90%',
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
     cursor: 'auto',
-    padding: Spacing.xl,
+    flexDirection: 'column',
+    overflow: 'hidden',
     ...Platform.select({
       web: { boxShadow: '0px 10px 25px rgba(0,0,0,0.3)' },
       default: { elevation: 8 }
     })
   },
+  aboutHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
+  },
+  aboutModalTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  closeIconBtn: {
+    padding: Spacing.xs,
+  },
+  closeIconText: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
   aboutScrollContent: {
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.xs,
+    paddingVertical: Spacing.xs,
+    paddingBottom: Spacing.lg,
   },
   splitLayoutContainer: {
-    gap: Spacing.xl,
+    gap: Spacing.lg,
     width: '100%',
   },
   layoutColumn: {
@@ -486,18 +524,18 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   columnHeading: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: Spacing.md,
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: Spacing.sm,
     borderBottomWidth: 1,
     paddingBottom: Spacing.xs,
     borderColor: 'rgba(120, 120, 120, 0.2)',
   },
   bottomColumnHeading: {
-    fontSize: 18,
-    fontWeight: '600',
-    paddingTop: Spacing.lg,
-    marginBottom: Spacing.md,
+    fontSize: 16,
+    fontWeight: '700',
+    paddingTop: Spacing.md,
+    marginBottom: Spacing.sm,
     borderBottomWidth: 1,
     paddingBottom: Spacing.xs,
     borderColor: 'rgba(120, 120, 120, 0.2)',
@@ -510,54 +548,76 @@ const styles = StyleSheet.create({
   },
   addressTextContent: {
     marginBottom: Spacing.xs,
-    paddingLeft: Spacing.xs,
   },
   mapContainer: {
     width: '100%',
-    height: 160,
+    height: 140,
     borderRadius: BorderRadius.sm,
     borderWidth: 1,
     overflow: 'hidden',
     marginTop: Spacing.xs,
   },
-  mapFallback: {
+  mapCardView: {
     flex: 1,
-    justifyContent: 'center',
+    padding: Spacing.sm,
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    justifyContent: 'center',
+    textAlign: 'center',
+    gap: 4,
+  },
+  mapPinTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  mapPinCoords: {
+    fontSize: 11,
+    fontWeight: '500',
+    marginBottom: 6,
+  },
+  openMapsBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  openMapsBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   infoCard: {
     borderLeftWidth: 3,
     paddingLeft: Spacing.md,
     marginBottom: Spacing.md,
     paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.sm,
   },
   infoCardTitle: {
-    fontSize: 15,
+    fontSize: 14.5,
     fontWeight: '600',
   },
   infoCardSubtitle: {
-    fontSize: 14,
+    fontSize: 13,
     marginTop: 2,
   },
   infoCardDuration: {
     fontSize: 12,
     fontWeight: '500',
-    marginTop: 4,
+    marginTop: 2,
+    marginBottom: 2,
   },
   hobbyList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.sm,
+    gap: Spacing.xs,
   },
   hobbyBadge: {
     borderWidth: 1,
     borderRadius: BorderRadius.sm,
     paddingVertical: Spacing.xs,
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.sm + 2,
   },
   hobbyText: {
-    fontSize: 13,
+    fontSize: 12.5,
     lineHeight: 18,
   },
   modalTitle: {
@@ -589,9 +649,8 @@ const styles = StyleSheet.create({
   modalActionRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: Spacing.md,
-    marginTop: Spacing.md,
-    paddingTop: Spacing.xs,
+    paddingTop: Spacing.sm,
+    marginTop: 'auto',
   },
   modalCancelBtn: {
     paddingVertical: Spacing.sm,
@@ -606,13 +665,13 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.sm,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.xl,
-    minWidth: 120,
+    minWidth: 100,
     alignItems: 'center',
     justifyContent: 'center',
   },
   modalSubmitText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
   }
 });
